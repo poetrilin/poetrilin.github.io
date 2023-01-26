@@ -1,0 +1,922 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.jpg">
+  <link rel="icon" href="/img/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Poetrilin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="优化方法(C2.U2) 1. 梯度优化算法 1.1 Mini-batch 梯度下降 将 \(X&#x3D;[x(1),x(2),x(3),...,x(m)]\)矩阵所有 m个样本划分为 t个子训练集,每个子训练集，也叫做mini-batch；每个子训练集称为 \(x^{\{i\}}\), 每个子训练集内样本个数均相同(若每个子训练集有1000个样本, 则 \(x^{\{i\}}&#x3D;[x(1),x(">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Optimization in DL">
+<meta property="og:url" content="http://poetrilin.github.io/2023/01/26/Code/DL/Notes5/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="优化方法(C2.U2) 1. 梯度优化算法 1.1 Mini-batch 梯度下降 将 \(X&#x3D;[x(1),x(2),x(3),...,x(m)]\)矩阵所有 m个样本划分为 t个子训练集,每个子训练集，也叫做mini-batch；每个子训练集称为 \(x^{\{i\}}\), 每个子训练集内样本个数均相同(若每个子训练集有1000个样本, 则 \(x^{\{i\}}&#x3D;[x(1),x(">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/exp_avg.png">
+<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/momomt.png">
+<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/RMP.png">
+<meta property="article:published_time" content="2023-01-26T12:18:54.679Z">
+<meta property="article:modified_time" content="2023-01-26T12:37:07.339Z">
+<meta property="article:author" content="Poetrilin">
+<meta property="article:tag" content="DL">
+<meta property="article:tag" content="optimize algorithms">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://poetrilin.github.io/img/imgDL/exp_avg.png">
+  
+  
+  
+  <title>Optimization in DL - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"poetrilin.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Poetrilin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bakgd.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Optimization in DL"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-26 20:18" pubdate>
+          2023年1月26日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.1k 字
+        
+      </span>
+    
+
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Optimization in DL</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="优化方法c2.u2">优化方法(C2.U2)</h2>
+<h3 id="梯度优化算法">1. 梯度优化算法</h3>
+<h4 id="mini-batch-梯度下降">1.1 Mini-batch 梯度下降</h4>
+<p>将 <span
+class="math inline">\(X=[x(1),x(2),x(3),...,x(m)]\)</span>矩阵所有
+m个样本划分为
+t个子训练集,每个子训练集，也叫做mini-batch；每个子训练集称为 <span
+class="math inline">\(x^{\{i\}}\)</span>,
+每个子训练集内样本个数均相同(若每个子训练集有1000个样本, 则 <span
+class="math inline">\(x^{\{i\}}=[x(1),x(2),...,x(1000)]\)</span>,维度为
+(nx,1000).</p>
+<p>例：把x(1)到x(1000)称为 X{1}, 把x(1001)到x(2000)称为
+X{2}，如果你的训练样本一共有500万个，每个mini-batch都有1000个样本，也就是说，你有5000个mini-batch,
+因为5000*1000=500万， 最后得到的是 X{5000}.</p>
+<p>若m不能被子训练集样本数整除,
+则最后一个子训练集样本可以小于其他子训练集样本数。 Y亦然.</p>
+<p>训练时, 每次迭代仅对一个子训练集（mini-batch）进行梯度下降:
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs py">On iteration t:<br>    Repeat:For i=<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,...,t:<br>    Forward Prop On X&#123;i&#125;<br>    Compute Cost J&#123;i&#125;<br>    Back Prop using X&#123;i&#125;,Y&#123;i&#125;<br>    Update w,b<br></code></pre></td></tr></table></figure> 1.使用 batch 梯度下降法时：</p>
+<p>一次遍历训练集只能让你做一个梯度下降；每次迭代都遍历整个训练集,预期每次迭代成本都会下降</p>
+<p>2.但若使用 mini-batch 梯度下降法</p>
+<p>一次遍历训练集，能让你做5000个梯度下降；如果想多次遍历训练集，你还需要另外设置一个while循环...</p>
+<p>若对成本函数作图, 并不是每次迭代都下降, 噪声较大,
+但整体上走势还是朝下的.
+特别的当minibatch的size很小，几乎是随机梯度下降，噪声较大，最后甚至不会收敛于最小值，但一般会在附近摆动.</p>
+<blockquote>
+<p>1)若样本集较小(小于2000), 无需使用 mini-batch;</p>
+<p>2)一般的 mini-batch 大小为 64~512, 通常为 2
+的整数次方(这样代码运行可能更快).</p>
+</blockquote>
+<p>一般的mini-batch GD还会加上Stochastic Gradient
+Descent(随机梯度下降的方法，即先随机打乱样本再训练)</p>
+<h4 id="code">Code</h4>
+<p>注意：实现SGD总共需要3个for循环：</p>
+<ol type="1">
+<li><p>迭代次数</p></li>
+<li><p>m个训练数据</p></li>
+<li><p>各层上(要更新所有参数，从(W1,b1)到(Wl,bl))</p></li>
+</ol>
+<p>实际上，如果你既不使用整个训练集也不使用一个训练示例来执行每次更新，则通常会得到更快的结果。小批量梯度下降法在每个步骤中使用中间数量的示例。通过小批量梯度下降，你可以遍历小批量，而不是遍历各个训练示例。</p>
+<ul>
+<li>Mini-Batch 梯度下降+ SGD</li>
+</ul>
+<p>让我们学习如何从训练集（X，Y）中构建小批次数据。</p>
+<p>分两个步骤：</p>
+<ol type="1">
+<li><p>Shuffle
+:如下所示，创建训练集（X，Y）的随机打乱版本。X和Y中的每一列代表一个训练示例。</p></li>
+<li><p>Partition
+:将打乱后的（X，Y）划分为大小为mini_batch_size（此处为64）的小批处理。</p></li>
+</ol>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">random_mini_batches</span>(<span class="hljs-params">X, Y, mini_batch_size = <span class="hljs-number">64</span>, seed = <span class="hljs-number">0</span></span>):<br>    <br>    np.random.seed(seed)            <span class="hljs-comment"># To make your &quot;random&quot; minibatches the same as ours</span><br>    m = X.shape[<span class="hljs-number">1</span>]                  <span class="hljs-comment"># number of training examples</span><br>    mini_batches = []<br>        <br>    <span class="hljs-comment"># Step 1: Shuffle (X, Y)</span><br>    permutation = <span class="hljs-built_in">list</span>(np.random.permutation(m))<br>    shuffled_X = X[:, permutation]<br>    shuffled_Y = Y[:, permutation].reshape((<span class="hljs-number">1</span>,m))<br><br>    <span class="hljs-comment"># Step 2: Partition (shuffled_X, shuffled_Y). Minus the end case.</span><br>    num_complete_minibatches = math.floor(m/mini_batch_size) <span class="hljs-comment"># number of mini batches of size mini_batch_size in your partitionning</span><br>    <span class="hljs-keyword">for</span> k <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, num_complete_minibatches):<br>        <span class="hljs-comment">### START CODE HERE ### (approx. 2 lines)</span><br>        mini_batch_X = shuffled_X[:, k * mini_batch_size : (k+<span class="hljs-number">1</span>) * mini_batch_size]<br>        mini_batch_Y = shuffled_Y[:, k * mini_batch_size : (k+<span class="hljs-number">1</span>) * mini_batch_size]<br>        mini_batch = (mini_batch_X, mini_batch_Y)<br>        mini_batches.append(mini_batch)<br><br>    <span class="hljs-comment"># Handling the end case (last mini-batch &lt; mini_batch_size)</span><br>    <span class="hljs-keyword">if</span> m % mini_batch_size != <span class="hljs-number">0</span>:<br>        mini_batch_X = shuffled_X[:, num_complete_minibatches * mini_batch_size : m]<br>        mini_batch_Y = shuffled_Y[:, num_complete_minibatches * mini_batch_size : m]<br>        mini_batch = (mini_batch_X, mini_batch_Y)<br>        mini_batches.append(mini_batch)<br><br>    <span class="hljs-keyword">return</span> mini_batches<br><br></code></pre></td></tr></table></figure>
+<h4 id="指数加权平均数exponentially-weighted-averages">1.2
+指数加权平均数(Exponentially Weighted Averages)</h4>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/68748778">参考博客</a></p>
+<p>这个不是优化算法，是下面的优化方法的数学基础.</p>
+<blockquote>
+<p>指数移动平均EMA（Exponential Moving
+Average）也叫权重移动平均（Weighted Moving
+Average），是一种给予近期数据更高权重的平均方法。</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>普通平均数<span class="math inline">\(\overline{v}
+=\frac1n\sum^n_{i=1}\theta_i\)</span></li>
+</ul>
+</blockquote>
+<blockquote>
+<ul>
+<li>EMA :<span class="math inline">\(v_t =\beta
+v_{t-1}+(1=\beta)\theta_t\)</span>，</li>
+</ul>
+</blockquote>
+<blockquote>
+<p><span class="math inline">\(v_t\)</span>表示前t条的平均值(<span
+class="math inline">\(v_0=0\)</span>)，<span
+class="math inline">\(\beta\)</span>是加权权重值
+(一般设为0.9-0.999)。</p>
+</blockquote>
+<figure>
+<img src="/img/imgDL/exp_avg.png" srcset="/img/loading.gif" lazyload alt="eg" />
+<figcaption aria-hidden="true">eg</figcaption>
+</figure>
+<p><span class="math display">\[v_t=βv_t−1+(1−β)θ_t,β∈[0,1)\]</span></p>
+<p>Andrew Ng在Course 2 Improving Deep Neural
+Networks中讲到，EMA可以近似看成过去<span
+class="math inline">\(\frac{1}{1-\beta}\)</span>个时刻v值的平均。</p>
+<p>普通的过去 n时刻的平均是这样的：<span
+class="math inline">\(v_t=\frac{(n-1)v_{t-1}+\theta_t}{n}\)</span>,</p>
+<p>类比EMA，可以发现当 <span class="math inline">\(\beta
+=\frac{n-1}{n}\)</span>时，两式形式上相等。需要注意的是，两个平均并不是严格相等的，这里只是为了帮助理解。</p>
+<p>实际上，EMA计算时，过去<span
+class="math inline">\(\frac{1}{1-\beta}\)</span>个时刻之前的数值平均会decay到<span
+class="math inline">\(\frac{1}{e}\)</span>的加权比例，证明如下。</p>
+<p>如果将这里的<span
+class="math inline">\(v_t\)</span>展开，可以得到：</p>
+<p><span class="math display">\[
+v_t=\alpha^n v_{t-n}+(1-\alpha)\left(\alpha^{n-1}
+\theta_{t-n+1}+\ldots+\alpha^0 \theta_t\right)
+\]</span> 其中,<span
+class="math inline">\(n=\frac{1}{1-\beta}\)</span>带入可得<span
+class="math inline">\(\alpha ^n=\alpha ^{\frac{1}{1-\alpha
+}}=\frac{1}{e}\)</span></p>
+<p><strong>EMA的偏差修正</strong></p>
+<p>实际使用中，如果令 <span
+class="math inline">\(v_0=0\)</span>，且步数较少，EMA的计算结果会有一定偏差。因此可以加一个偏差修正（bias
+correction）： <span class="math display">\[v_t=
+\frac{v_t}{1+\beta^t}\]</span> 显然，当t很大时，修正近似于1。</p>
+<h4 id="动量梯度下降法gradient-descent-with-momentum">1.3
+动量梯度下降法(Gradient Descent With Momentum)</h4>
+<p><img src="/img/imgDL/momomt.png" srcset="/img/loading.gif" lazyload /></p>
+<p>真实训练可能会出现这样的情况:</p>
+<ol type="1">
+<li><p>摆动向最小值前进，效率低</p></li>
+<li><p>如果学习率较大直接超调(跳出凸区域)只能使用小学习率</p></li>
+</ol>
+<p>动量梯度下降法(Momentum)
+使用指数加权平均数EMA(计算梯度的指数加权平均数,并用该梯度更新你的权重,于是更平滑，可以用更大的学习率):
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment"># β一般为0.9</span><br><span class="hljs-keyword">for</span> iteration t:<br>    <span class="hljs-comment">##... compute dW,db</span><br>    v_dW=β*v_dW+(<span class="hljs-number">1</span>−β)*dW,<br>    v_db=β*v_db+(<span class="hljs-number">1</span>−β)*db<br>    W=W−α*v_dW<br>    b=b−α*v_db<br></code></pre></td></tr></table></figure></p>
+<h4 id="rmsproproot-mean-square-prop">1.4 RMSprop(Root Mean Square
+prop)</h4>
+<p><img src="/img/imgDL/RMP.png" srcset="/img/loading.gif" lazyload /></p>
+<p>全称是均方根传递，能够很好的消除两方向不协调摆动，从而可以提高学习率.
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs py"><br><span class="hljs-comment"># β参数与EMA方法不同，一般为0.999</span><br><span class="hljs-keyword">for</span> iteration t:<br>    <span class="hljs-comment">##... compute dW,db</span><br>    SdW=β<span class="hljs-number">2</span>*SdW+(<span class="hljs-number">1</span>−β<span class="hljs-number">2</span>)*(dW)^<span class="hljs-number">2</span><br>    Sdb=β<span class="hljs-number">2</span>*Sdb+(<span class="hljs-number">1</span>−β<span class="hljs-number">2</span>)*(db)^<span class="hljs-number">2</span><br>    W=W−α*dW/sqrt(SdW)+epsilon  <span class="hljs-comment"># 分母+epsilon是为了数值稳定性，通常取10^-8</span><br>    b=b−α*db/sqrt(Sdb)+epsilon<br></code></pre></td></tr></table></figure></p>
+<h4 id="adam-优化算法adaptive-moment-estimation">1.5 Adam
+优化算法(Adaptive Moment Estimation)</h4>
+<p>RMSprop 与 Adam 是少有的经受住人们考验的两种算法. Adam 的本质就是将
+Momentum 和 RMSprop 结合在一起. 使用该算法首先需要初始化: <span
+class="math display">\[ v_{dW} = 0, S_{dW} = 0, v_{db} = 0, S_{db} =
+0.\]</span> 在第t次迭代中: <span class="math display">\[\begin{aligned}
+v_{dW}  = \beta_1 v_{dW} + (1 - \beta_1)dW ,
+v_{db}  = \beta_1 v_{db} + (1 - \beta_1)db \\
+S_{dW}  = \beta_2 S_{dW} + (1 - \beta_2)(dW)^2 ,\   
+S_{db}  = \beta_2 S_{db} + (1 - \beta_2)(db)^2 \\
+v_{dW}^{\text{corrected}}  = \frac{v_{dW}}{1-\beta_1^t}, \quad
+v_{db}^{\text{corrected}} = \frac{v_{db}}{1-\beta_1^t} \\
+S_{dW}^{\text{corrected}}  = \frac{S_{dW}}{1-\beta_2^t}, \quad
+S_{db}^{\text{corrected}} = \frac{S_{db}}{1-\beta_2^t} \\
+W  = W -
+\alpha\frac{v_{dW}^{\text{corrected}}}{\sqrt{S_{dW}^{\text{corrected}}+\varepsilon}}
+,
+b  = b -
+\alpha\frac{v_{db}^{\text{corrected}}}{\sqrt{S_{db}^{\text{corrected}}+\varepsilon}}
+\end{aligned}
+\]</span> |超参数 |值| |---|---| |<span
+class="math inline">\(β\)</span>|<span
+class="math inline">\(0.9\)</span>| |<span
+class="math inline">\(β_2\)</span>|<span
+class="math inline">\(0.999\)</span>| |<span
+class="math inline">\(\epsilon\)</span>|<span
+class="math inline">\(10^{-8}\)</span>| |<span
+class="math inline">\(\alpha\)</span>|调整|</p>
+<h4 id="code-1">Code</h4>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">initialize_adam</span>(<span class="hljs-params">parameters</span>) :<br>    L = <span class="hljs-built_in">len</span>(parameters) // <span class="hljs-number">2</span> <span class="hljs-comment"># number of layers in the neural networks</span><br>    v = &#123;&#125;<br>    s = &#123;&#125;<br>    <br>    <span class="hljs-comment"># Initialize v, s. Input: &quot;parameters&quot;. Outputs: &quot;v, s&quot;.</span><br>    <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(L):<br>        v[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = np.zeros(parameters[<span class="hljs-string">&quot;W&quot;</span> + <span class="hljs-built_in">str</span>(l+<span class="hljs-number">1</span>)].shape)<br>        v[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = np.zeros(parameters[<span class="hljs-string">&quot;b&quot;</span> + <span class="hljs-built_in">str</span>(l+<span class="hljs-number">1</span>)].shape)<br>        s[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = np.zeros(parameters[<span class="hljs-string">&quot;W&quot;</span> + <span class="hljs-built_in">str</span>(l+<span class="hljs-number">1</span>)].shape)<br>        s[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = np.zeros(parameters[<span class="hljs-string">&quot;b&quot;</span> + <span class="hljs-built_in">str</span>(l+<span class="hljs-number">1</span>)].shape)<br>    <br>    <span class="hljs-keyword">return</span> v, s<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">update_parameters_with_adam</span>(<span class="hljs-params">parameters, grads, v, s, t, learning_rate = <span class="hljs-number">0.01</span>,</span><br><span class="hljs-params">                                beta1 = <span class="hljs-number">0.9</span>, beta2 = <span class="hljs-number">0.999</span>,  epsilon = <span class="hljs-number">1e-8</span></span>):<br>    <br>    L = <span class="hljs-built_in">len</span>(parameters) // <span class="hljs-number">2</span>                 <span class="hljs-comment"># number of layers in the neural networks</span><br>    v_corrected = &#123;&#125;                         <span class="hljs-comment"># Initializing first moment estimate, python dictionary</span><br>    s_corrected = &#123;&#125;                         <span class="hljs-comment"># Initializing second moment estimate, python dictionary</span><br>    <br>    <span class="hljs-comment"># Perform Adam update on all parameters</span><br>    <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(L):<br>        <span class="hljs-comment"># Moving average of the gradients. Inputs: &quot;v, grads, beta1&quot;. Output: &quot;v&quot;.</span><br>        v[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = beta1*v[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] +(<span class="hljs-number">1</span>-beta1)*grads[<span class="hljs-string">&#x27;dW&#x27;</span> + <span class="hljs-built_in">str</span>(l+<span class="hljs-number">1</span>)]<br>        v[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = beta1*v[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] +(<span class="hljs-number">1</span>-beta1)*grads[<span class="hljs-string">&#x27;db&#x27;</span> + <span class="hljs-built_in">str</span>(l+<span class="hljs-number">1</span>)]<br><br>        <span class="hljs-comment"># Compute bias-corrected first moment estimate. Inputs: &quot;v, beta1, t&quot;. Output: &quot;v_corrected&quot;.</span><br>        v_corrected[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = v[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]/(<span class="hljs-number">1</span>-(beta1)**t)<br>        v_corrected[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = v[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]/(<span class="hljs-number">1</span>-(beta1)**t)<br><br>        <span class="hljs-comment"># Moving average of the squared gradients. Inputs: &quot;s, grads, beta2&quot;. Output: &quot;s&quot;.</span><br>        s[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] =beta2*s[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] + (<span class="hljs-number">1</span>-beta2)*(grads[<span class="hljs-string">&#x27;dW&#x27;</span> + <span class="hljs-built_in">str</span>(l+<span class="hljs-number">1</span>)]**<span class="hljs-number">2</span>)<br>        s[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = beta2*s[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] + (<span class="hljs-number">1</span>-beta2)*(grads[<span class="hljs-string">&#x27;db&#x27;</span> + <span class="hljs-built_in">str</span>(l+<span class="hljs-number">1</span>)]**<span class="hljs-number">2</span>)<br><br>        <span class="hljs-comment"># Compute bias-corrected second raw moment estimate. Inputs: &quot;s, beta2, t&quot;. Output: &quot;s_corrected&quot;.</span><br>        s_corrected[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] =s[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]/(<span class="hljs-number">1</span>-(beta2)**t)<br>        s_corrected[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = s[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]/(<span class="hljs-number">1</span>-(beta2)**t)<br><br>        <span class="hljs-comment"># Update parameters. Inputs: &quot;parameters, learning_rate, v_corrected, s_corrected, epsilon&quot;. Output: &quot;parameters&quot;.</span><br>        parameters[<span class="hljs-string">&quot;W&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = parameters[<span class="hljs-string">&quot;W&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]-learning_rate*(v_corrected[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]/np.sqrt( s_corrected[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]+epsilon))<br>        parameters[<span class="hljs-string">&quot;b&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)] = parameters[<span class="hljs-string">&quot;b&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]-learning_rate*(v_corrected[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]/np.sqrt( s_corrected[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l + <span class="hljs-number">1</span>)]+epsilon))<br>        <br>    <span class="hljs-keyword">return</span> parameters, v, s<br></code></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr class="header">
+<th>优化方法</th>
+<th>准确度</th>
+<th>模型损失</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Gradient descent</td>
+<td>79.70％</td>
+<td>振荡</td>
+</tr>
+<tr class="even">
+<td>Momentum</td>
+<td>79.70％</td>
+<td>振荡</td>
+</tr>
+<tr class="odd">
+<td>Adam</td>
+<td>94％</td>
+<td>更光滑</td>
+</tr>
+</tbody>
+</table>
+<p>冲量通常会有所帮助，但是鉴于学习率低和数据集过于简单，其影响几乎可以忽略不计。</p>
+<p>同样，你看到损失的巨大波动是因为对于优化算法，某些小批处理比其他小批处理更为困难。</p>
+<p>另一方面，Adam明显胜过小批次梯度下降和冲量。如果你在此简单数据集上运行更多epoch，则这三种方法都将产生非常好的结果。但是，Adam收敛得更快。</p>
+<p>Adam的优势包括：</p>
+<ol type="1">
+<li>相对较低的内存要求（尽管高于梯度下降和带冲量的梯度下降）</li>
+<li>即使很少调整超参数，通常也能很好地工作（<span
+class="math inline">\(\alpha\)</span>除外）</li>
+</ol>
+<h3 id="超参数调整优化">2. 超参数调整优化</h3>
+<h4 id="学习率衰减learning-rate-decay">2.1 学习率衰减(Learning Rate
+Decay)</h4>
+<p>如果使用固定的学习率 α, 在使用 mini-batch
+时在最后的迭代过程中会有噪音, 不会精确收敛, 最终一直在附近摆动.
+因此我们希望在训练后期 α不断减小.</p>
+<p>以下为几个常见的方法:</p>
+<p><strong>法一：</strong> <span
+class="math display">\[α=\frac{α_0}{decay\_rate∗epoch\_num}\]</span>
+其中 α0为初始学习率; epoch_num为当前迭代的代数; decay_rate是衰减率,
+一个需要调整的超参数.</p>
+<p><strong>法二：</strong> <span
+class="math display">\[α=0.95^{epoch\_num}α_0\]</span> 其中 0.95
+自然也能是一些其他的小于 1 的数字.</p>
+<p><strong>法三：</strong></p>
+<p><span
+class="math display">\[α=\frac{k}{\sqrt{epoch\_num}}α_0\]</span></p>
+<p><strong>法四:</strong></p>
+<p>离散下降(discrete stair cease), 过一阵子学习率减半, 过一会又减半.
+<span class="math display">\[\alpha = \frac{1}{1 + decayRate \times
+\lfloor\frac{epochNum}{timeInterval}\rfloor} \alpha_{0}\]</span></p>
+<p><strong>法五:</strong></p>
+<p>手动衰减, 感觉慢了就调快点, 感觉快了就调慢点.</p>
+<h3 id="局部最优问题local-optima">3. 局部最优问题(Local Optima)</h3>
+<p>人们经常担心算法困在局部最优点, 而事实上算法更经常被困在鞍点,
+尤其是在高维空间中</p>
+<p>成熟的优化算法如 Adam 算法，能够加快速度，让你尽早往下走出平稳段.</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/DL/" class="category-chain-item">DL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DL/">#DL</a>
+      
+        <a href="/tags/optimize-algorithms/">#optimize algorithms</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Optimization in DL</div>
+      <div>http://poetrilin.github.io/2023/01/26/Code/DL/Notes5/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Poetrilin</div>
+        </div>
+      
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/26/Code/DL/Notes4/" title="Some tricks in DL">
+                        <span class="hidden-mobile">Some tricks in DL</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
