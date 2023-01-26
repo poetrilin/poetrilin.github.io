@@ -1,0 +1,831 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/avatar.jpg">
+  <link rel="icon" href="/img/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Poetrilin">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Basic recipe for ML&#x2F;DL(C2.U1) Concept  data set   training set 训练集 Dev(elop) set Test set 测试集   欠拟合和过拟合 |欠拟合 | right|over过拟合 | |--- |--- |--- | |error大,i.e Bias| |方差varience大|   * From B">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Some tricks in DL">
+<meta property="og:url" content="http://poetrilin.github.io/2023/01/26/Code/DL/Notes4/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Basic recipe for ML&#x2F;DL(C2.U1) Concept  data set   training set 训练集 Dev(elop) set Test set 测试集   欠拟合和过拟合 |欠拟合 | right|over过拟合 | |--- |--- |--- | |error大,i.e Bias| |方差varience大|   * From B">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/bias_varience.png">
+<meta property="article:published_time" content="2023-01-26T03:28:11.583Z">
+<meta property="article:modified_time" content="2023-01-26T05:49:57.354Z">
+<meta property="article:author" content="Poetrilin">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://poetrilin.github.io/img/imgDL/bias_varience.png">
+  
+  
+  
+  <title>Some tricks in DL - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"poetrilin.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Poetrilin</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/bakgd.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Some tricks in DL"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-01-26 11:28" pubdate>
+          2023年1月26日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.1k 字
+        
+      </span>
+    
+
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Some tricks in DL</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="basic-recipe-for-mldlc2.u1">Basic recipe for ML/DL(C2.U1)</h2>
+<h4 id="concept">Concept</h4>
+<ol type="1">
+<li><strong>data set</strong></li>
+</ol>
+<ul>
+<li>training set 训练集</li>
+<li>Dev(elop) set</li>
+<li>Test set 测试集</li>
+</ul>
+<ol start="2" type="1">
+<li>欠拟合和过拟合 |欠拟合 | right|over过拟合 | |--- |--- |--- |
+|error大,i.e Bias| |方差varience大|</li>
+</ol>
+<p><img src="/img/imgDL/bias_varience.png" srcset="/img/loading.gif" lazyload /> * <strong>From Bias to
+Varience</strong> &gt; Bias----&gt; training set &gt; Varience----&gt;
+Dev set</p>
+<pre><code class=" mermaid">graph LR
+S1(light bias)--&gt;yes?--&gt;S2(light varience)
+S2 --&gt;S3(right)
+S2 --&gt;S4(high Bias &amp; high varience)
+S4 --&gt;S1
+</code></pre>
+<p>改进过拟合:1.增加数据集(难！)
+(对于图片可以旋转裁剪扭曲等操作增加数据集,但可以减少数据获取，质量不如全新的图片，但方便)
+2.正则化</p>
+<h2 id="regularzation-正则化">Regularzation 正则化</h2>
+<p>target: <strong>lower the overfitting</strong></p>
+<p>1.<strong>L1正则化</strong></p>
+<p>使用L1正则化, w最终会是稀疏的(w中含很多0),
+有利于压缩模型但也没有降低太多内存,
+所以不能将压缩作为L1正则化的目的。通常我们使用<strong>L2正则化</strong>.
+<span class="math display">\[ J(w, b) = \frac{1}{m} \sum^{m}_{i=1}
+\mathcal{L}(a^{(i)}, y^{(i)}) + \frac{\lambda}{2m} ||w||_1 \]</span></p>
+<p>其中<span class="math inline">\(||w||_1 = \sum^{n_x}_{j=1}
+|w_j|.\)</span></p>
+<p>2 .<strong>L2正则化</strong> <span class="math display">\[ J(w,b) =
+\frac{1}{m}\sum_{i=1}^{m} yloga+(1-y)log(1-a)  + \frac{\lambda}{2m}||w||
+\]</span> 其中<span class="math inline">\(||w||^2_2 = \sum^{n_x}_{j=1}
+w_j^2 = w^Tw\)</span>,</p>
+<p>注: 尽管<span class="math inline">\(b\)</span>也是参数,
+但我们没有必要添加 <span class="math inline">\(\frac
+λ{2m}b\)</span>项，因为<span
+class="math inline">\(w\)</span>几乎涵盖了所有参数, 而
+b只是众多参数中的一个, 可以忽略不计(当然加上也没问题).</p>
+<p>为什么加上一个<span
+class="math inline">\(\frac{\lambda}{2m}||w||\)</span>
+会减少过拟合(overfitting)呢？</p>
+<p>直观上来说，当 <span
+class="math inline">\(\lambda\)</span>较大时，迭代后||w||会变很小，因此某些神经元权重会变很小(甚至为0)，因此神经网络结构会变的简单(极端的话甚至趋于线性)。</p>
+<p>3.<strong>dropout 随机失活(权值衰减)</strong></p>
+<p>广泛用于computer vision
+缺点:难以保证J/L是否足够好,在调试与找参数时必要的关闭dropout
+由于L2正则化失活往往会把权重集中在一个或是少数神经元上,导致拟合效果不佳</p>
+<p>4 其他正则化</p>
+<p><strong>数据扩增:</strong></p>
+<p>比如训练分类猫咪的图片,
+将图片左右翻转、旋转一个小角度、稍微变形处理等, 可以人工合成数据.</p>
+<p><strong>Early Stopping:</strong></p>
+<p>运行梯度下降时, 我们可以绘制训练误差, 当验证集误差不降反增的时候,
+停止训练.</p>
+<p><strong>缺点</strong>：是可能导致代价J值不够小,
+却又没解决继续训练可能导致的过拟合问题.(且不利于训练的优化)</p>
+<h3 id="code">Code</h3>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">forward_propagation_with_dropout</span>(<span class="hljs-params">X, parameters, keep_prob = <span class="hljs-number">0.8</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    X -- input dataset, of shape (input size, number of examples)</span><br><span class="hljs-string">    parameters -- python dictionary containing your parameters &quot;W1&quot;, &quot;b1&quot;, &quot;W2&quot;, &quot;b2&quot;,...,&quot;WL&quot;, &quot;bL&quot;</span><br><span class="hljs-string">                    W -- weight matrix of shape (size of current layer, size of previous layer)</span><br><span class="hljs-string">                    b -- bias vector of shape (size of current layer,1)</span><br><span class="hljs-string">    keep_prob: probability of keeping a neuron active during drop-out, scalar</span><br><span class="hljs-string">    :return:</span><br><span class="hljs-string">    AL: the output of the last Layer(y_predict)</span><br><span class="hljs-string">    caches: list, every element is a tuple:(W,b,z,A_pre)</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    np.random.seed(<span class="hljs-number">1</span>)  <span class="hljs-comment">#random seed</span><br>    L = <span class="hljs-built_in">len</span>(parameters) // <span class="hljs-number">2</span>            <span class="hljs-comment"># number of layer</span><br>    A = X<br>    caches = [(<span class="hljs-literal">None</span>,<span class="hljs-literal">None</span>,<span class="hljs-literal">None</span>,X,<span class="hljs-literal">None</span>)]  <span class="hljs-comment"># 用于存储每一层的，w,b,z,A,D第0层w,b,z用none代替</span><br>    <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, L):<br>        A_pre = A<br>        W = parameters[<span class="hljs-string">&quot;W&quot;</span> + <span class="hljs-built_in">str</span>(l)]<br>        b = parameters[<span class="hljs-string">&quot;b&quot;</span> + <span class="hljs-built_in">str</span>(l)]<br>        z = np.dot(W, A_pre) + b  <span class="hljs-comment"># 计算z = wx + b</span><br>        A = relu(z)  <span class="hljs-comment"># relu activation function</span><br>        D = np.random.rand(A.shape[<span class="hljs-number">0</span>], A.shape[<span class="hljs-number">1</span>]) <span class="hljs-comment">#initialize matrix D</span><br>        D = (D &lt; keep_prob)       <span class="hljs-comment">#convert entries of D to 0 or 1 (using keep_prob as the threshold)</span><br>        A = np.multiply(A, D)     <span class="hljs-comment">#shut down some neurons of A</span><br>        A = A / keep_prob         <span class="hljs-comment"># scale the value of neurons that haven&#x27;t been shut down</span><br>        caches.append((W, b, z, A,D))<br>    <span class="hljs-comment"># calculate Lth layer</span><br>    WL = parameters[<span class="hljs-string">&quot;W&quot;</span> + <span class="hljs-built_in">str</span>(L)]<br>    bL = parameters[<span class="hljs-string">&quot;b&quot;</span> + <span class="hljs-built_in">str</span>(L)]<br>    zL = np.dot(WL, A) + bL<br>    AL = sigmoid(zL)<br>    caches.append((WL, bL, zL, A))<br>    <span class="hljs-keyword">return</span> AL, caches<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">backward_propagation_with_dropout</span>(<span class="hljs-params">AL, Y, caches, keep_prob = <span class="hljs-number">0.8</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Implement the backward propagation presented in figure 2.</span><br><span class="hljs-string">        Arguments:</span><br><span class="hljs-string">        X -- input dataset, of shape (input size, number of examples)</span><br><span class="hljs-string">        Y -- true &quot;label&quot; vector (containing 0 if cat, 1 if non-cat)</span><br><span class="hljs-string">        caches -- caches output from forward_propagation(),(W,b,z,pre_A)</span><br><span class="hljs-string">        keep_prob: probability of keeping a neuron active during drop-out, scalar</span><br><span class="hljs-string">        Returns:</span><br><span class="hljs-string">        gradients -- A dictionary with the gradients with respect to dW,db</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>    m = Y.shape[<span class="hljs-number">1</span>]<br>    L = <span class="hljs-built_in">len</span>(caches) - <span class="hljs-number">1</span><br>    <span class="hljs-comment"># print(&quot;L:   &quot; + str(L))</span><br>    <span class="hljs-comment"># calculate the Lth layer gradients</span><br>    prev_AL = caches[L - <span class="hljs-number">1</span>][<span class="hljs-number">3</span>]<br>    dzL = <span class="hljs-number">1.</span> / m * (AL - Y)<br>    dWL = np.dot(dzL, prev_AL.T)<br>    dbL = np.<span class="hljs-built_in">sum</span>(dzL, axis=<span class="hljs-number">1</span>, keepdims=<span class="hljs-literal">True</span>)<br>    gradients = &#123;<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(L): dWL, <span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(L): dbL&#125;<br>    <span class="hljs-comment"># calculate from L-1 to 1 layer gradients</span><br>    <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-built_in">reversed</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">1</span>, L)): <span class="hljs-comment"># L-1,L-2,...,1</span><br>        post_W = caches[l + <span class="hljs-number">1</span>][<span class="hljs-number">0</span>]  <span class="hljs-comment"># 要用后一层的W</span><br>        dz = dzL  <span class="hljs-comment"># 用后一层的dz</span><br>        dal = np.dot(post_W.T, dz)<br>        Dl = caches[l][<span class="hljs-number">4</span>] <span class="hljs-comment">#当前层的D</span><br>        dal = np.multiply(dal, Dl) <span class="hljs-comment">#Apply mask Dl to shut down the same neurons as during the forward propagation</span><br>        dal = dal / keep_prob <span class="hljs-comment">#Scale the value of neurons that haven&#x27;t been shut down</span><br>        Al = caches[l][<span class="hljs-number">3</span>]  <span class="hljs-comment">#当前层的A</span><br>        dzl = np.multiply(dal, relu_backward(Al))<span class="hljs-comment">#也可以用dzl=np.multiply(dal, np.int64(Al &gt; 0))来实现</span><br>        prev_A = caches[l-<span class="hljs-number">1</span>][<span class="hljs-number">3</span>]  <span class="hljs-comment"># 前一层的A</span><br>        dWl = np.dot(dzl, prev_A.T)<br>        dbl = np.<span class="hljs-built_in">sum</span>(dzl, axis=<span class="hljs-number">1</span>, keepdims=<span class="hljs-literal">True</span>)<br><br>        gradients[<span class="hljs-string">&quot;dW&quot;</span> + <span class="hljs-built_in">str</span>(l)] = dWl<br>        gradients[<span class="hljs-string">&quot;db&quot;</span> + <span class="hljs-built_in">str</span>(l)] = dbl<br>        dzL = dzl  <span class="hljs-comment"># 更新dz</span><br>    <span class="hljs-keyword">return</span> gradients    <br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>注意： 1.训练时的 "a[l]/= 0.8" 要修复权重</p>
+<p>2.在测试阶段无需使用 Dropout.(测试阶段要关掉)</p>
+<p>3.Dropout 不能与梯度检验同时使用，因为 Dropout
+在梯度下降上的代价函数J难以计算. * 结果展示 Here are the results of our
+three models:</p>
+</blockquote>
+<table>
+<thead>
+<tr class="header">
+<th>model</th>
+<th>train accuracy</th>
+<th>test accuracy</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>3-layer NN without regularization</td>
+<td>95%</td>
+<td>91.5%</td>
+</tr>
+<tr class="even">
+<td>3-layer NN with L2-regularization</td>
+<td>94%</td>
+<td>93%</td>
+</tr>
+<tr class="odd">
+<td>3-layer NN with dropout</td>
+<td>93%</td>
+<td>95%</td>
+</tr>
+</tbody>
+</table>
+<h2 id="优化设置">优化设置</h2>
+<ul>
+<li><strong>归一化输入</strong> <span class="math display">\[
+\overrightarrow x = x-\mu  , \overrightarrow x/=\sigma\]</span> <span
+class="math display">\[其中 \mu= \frac1m\sum x ,\sigma ^2=\frac1m
+x^2    \]</span> 优化效果如下:
+即使各维度尺寸保持相对一致便于调控搜索的步长 <img
+src="/img/imgDL/normalization.png" srcset="/img/loading.gif" lazyload /></li>
+<li><strong>权值初始化</strong> 处理梯度消失&amp;梯度爆炸
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs py">W[l] = np.random.randn(shape)*np.sqrt(<span class="hljs-number">2</span>/n[l-<span class="hljs-number">1</span>])<br>\<span class="hljs-comment"># 使用Relu作为激活函数,不同激活函数可查询资料/</span><br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="梯度检测">梯度检测</h2>
+<blockquote>
+<p>---only to debug, don't in training</p>
+<p>梯度估计:<span
+class="math inline">\(f^{&#39;}(x)=\frac{f(x+\epsilon)-f(x-\epsilon)}{2\epsilon}\)</span>,数值计算比单侧导数更精确.</p>
+</blockquote>
+<p>1.1 gradient checking 如何工作?</p>
+<p>Backpropagation 中计算梯度(the gradients) <span
+class="math inline">\(∂J,∂θ,θ\)</span>代表着模型的参数，<span
+class="math inline">\(J\)</span>是使用前向传播和你的loss
+function来计算的。前向传播十分容易，因此使用计算<span
+class="math inline">\(J\)</span>的代码来确认计算 <span
+class="math inline">\(\frac{∂J}{∂θ}\)</span>的代码</p>
+<p>我们来看一下derivative (or gradient)的定义：</p>
+<p><span
+class="math display">\[\frac{∂J}{∂θ}=lim_{ε→0}\frac{J(θ+ε)−J(θ−ε)}{2ε}\]</span>
+接下来： 计算 "gradapprox" 使用公式（1）和 一个很小的值 ε .遵循以下步骤:
+1. <span class="math inline">\(θ^+=θ+ε\)</span> 2. <span
+class="math inline">\(θ^−=θ−ε\)</span> 3. <span
+class="math inline">\(J^+=J(θ+)\)</span> 4. <span
+class="math inline">\(J^−=J(θ−)\)</span> 5. <span
+class="math inline">\(gradapprox=\frac{J^+−J^−}{2ε}\)</span></p>
+<p>然后，使用backward propagation计算gradient , 并存储结果到变量 "grad"
+最后, 计算 "gradapprox" 和 the "grad" 的相对偏差，使用下列公式: <span
+class="math display">\[difference=\frac{||grad−gradapprox||_2}{||grad||_2+||gradapprox||_2}\]</span>
+你需要三个步骤来计算这个公式： <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-comment">#1&#x27;. compute the numerator(分子) </span><br> np.linalg.norm(...)<br><span class="hljs-comment">#2&#x27;. compute the denominator(分母). </span><br> np.linalg.norm(...) <br><span class="hljs-comment">#3&#x27;. divide them.</span><br></code></pre></td></tr></table></figure> 如果这个 difference 非常小
+(小于 <span class="math inline">\(10^{−7}\)</span>), gradient计算正确.
+否则，错误. <figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">def</span> <span class="hljs-title function_">gradient_check</span>(<span class="hljs-params">x, theta, epsilon = <span class="hljs-number">1e-7</span></span>):<br>   <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">   Implement the backward propagation presented in Figure 1.</span><br><span class="hljs-string">   &quot;&quot;&quot;</span><br>   <br>   <span class="hljs-comment"># Compute gradapprox using left side of formula (1). epsilon is small enough, you don&#x27;t need to worry about the limit.</span><br>   thetaplus = theta + epsilon<br>   thetaminus = theta - epsilon<br>   J_plus = forward_propagation(x, thetaplus)<br>   J_minus = forward_propagation(x, thetaminus)<br>   gradapprox = (J_plus - J_minus) / (<span class="hljs-number">2.</span> * epsilon)<br><br>   <span class="hljs-comment"># Check if gradapprox is close enough to the output of backward_propagation()</span><br>   grad = backward_propagation(x, theta)<br>   numerator = np.linalg.norm(grad - gradapprox)<br>   denominator = np.linalg.norm(grad) + np.linalg.norm(gradapprox)<br>   difference = numerator / denominator<br>   <br>   <span class="hljs-keyword">if</span> difference &lt; <span class="hljs-number">1e-7</span>:<br>       <span class="hljs-built_in">print</span> (<span class="hljs-string">&quot;The gradient is correct!&quot;</span>)<br>   <span class="hljs-keyword">else</span>:<br>       <span class="hljs-built_in">print</span> (<span class="hljs-string">&quot;The gradient is wrong!&quot;</span>)<br>   <br>   <span class="hljs-keyword">return</span> difference<br></code></pre></td></tr></table></figure></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/DL/" class="category-chain-item">DL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Some tricks in DL</div>
+      <div>http://poetrilin.github.io/2023/01/26/Code/DL/Notes4/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Poetrilin</div>
+        </div>
+      
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/24/Code/DL/DL%E5%8E%9F%E7%90%86/" title="DL基本原理">
+                        <span class="hidden-mobile">DL基本原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('mermaid' in window) {
+        mermaid.init();
+      }
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

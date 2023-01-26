@@ -16,18 +16,18 @@
   <meta name="author" content="Poetrilin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="环境:  本地: windows11 腾讯云服务器: ubuntu 20.04   首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),  注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察sudo su ubuntu   在VSCode上下载插件Renote">
+    <meta name="description" content="环境:  本地: windows11 腾讯云服务器: ubuntu 20.04   首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),  注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察sudo su ubuntu  在VSCode上下载插件Renote-SSH,然后配置ss">
 <meta property="og:type" content="article">
 <meta property="og:title" content="VSCode远程SSH连接">
 <meta property="og:url" content="http://poetrilin.github.io/2023/01/24/Code/env/vscode%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="环境:  本地: windows11 腾讯云服务器: ubuntu 20.04   首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),  注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察sudo su ubuntu   在VSCode上下载插件Renote">
+<meta property="og:description" content="环境:  本地: windows11 腾讯云服务器: ubuntu 20.04   首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),  注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察sudo su ubuntu  在VSCode上下载插件Renote-SSH,然后配置ss">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://poetrilin.github.io/img/blogssh1.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/blog-ssh2.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/blog-ssh3.png">
 <meta property="article:published_time" content="2023-01-24T02:01:56.672Z">
-<meta property="article:modified_time" content="2023-01-24T06:12:40.801Z">
+<meta property="article:modified_time" content="2023-01-26T05:41:12.419Z">
 <meta property="article:author" content="Poetrilin">
 <meta property="article:tag" content="vscode">
 <meta property="article:tag" content="远程SSH">
@@ -237,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          620 字
+          485 字
         
       </span>
     
@@ -287,31 +287,39 @@
 <li>本地: windows11</li>
 <li>腾讯云服务器: ubuntu 20.04</li>
 </ul>
-<ol>
-<li><p>首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),</p>
+<ol type="1">
+<li><p>首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D://tcf//tcf.pem),</p>
 <blockquote>
 <p>注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察<code>sudo su ubuntu</code></p>
-</blockquote>
-</li>
-<li><p>在VSCode上下载插件Renote-SSH,然后配置ssh-configration</p>
-</li>
+</blockquote></li>
+<li><p>在VSCode上下载插件Renote-SSH,然后配置ssh-configration</p></li>
 </ol>
-<p><img src="/../../../img/blogssh1.png" srcset="/img/loading.gif" lazyload alt="blog-ssh1"></p>
+<figure>
+<img src="/img/blogssh1.png" srcset="/img/loading.gif" lazyload alt="blog-ssh1" />
+<figcaption aria-hidden="true">blog-ssh1</figcaption>
+</figure>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">Host tcf           //你的名字，可自取<br>    HostName 你的IP      <br>    Port 22             //SSH连接端口为22<br>    User ubuntu       //默认<br>    IdentityFile D:\tcf\tcf.pem   //你的私钥地址<br></code></pre></td></tr></table></figure>
-
-<ol>
+<ol type="1">
 <li>新建一个终端，运行<code>ssh tcf</code></li>
 </ol>
-<p>然后Warning： 说是权限too open无法进入，大概是windows给用户的权限太多导致的一些问题</p>
-<p><img src="/../../../img/blog-ssh2.png" srcset="/img/loading.gif" lazyload alt="blog-ssh2"></p>
-<p><a href="%5B(22%E6%9D%A1%E6%B6%88%E6%81%AF">参考博客</a> windows ssh Permissions for “xxx“ are too open错误详细解决方案_菜到不知所措的博客-CSDN博客_are too open](<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_40415591/article/details/121661857">https://blog.csdn.net/weixin_40415591/article/details/121661857</a>))</p>
+<p>然后Warning： 说是权限too
+open无法进入，大概是windows给用户的权限太多导致的一些问题</p>
+<figure>
+<img src="/img/blog-ssh2.png" srcset="/img/loading.gif" lazyload alt="blog-ssh2" />
+<figcaption aria-hidden="true">blog-ssh2</figcaption>
+</figure>
+<p><a
+href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20too%20open错误详细解决方案_菜到不知所措的博客-CSDN博客_are%20too%20open%5D(https://blog.csdn.net/weixin_40415591/article/details/121661857)">参考博客</a></p>
 <p>最后保证你的权限里只有所有者一个即可。</p>
-<p><img src="/../../../img/blog-ssh3.png" srcset="/img/loading.gif" lazyload alt="blog-ssh3"></p>
+<figure>
+<img src="/img/blog-ssh3.png" srcset="/img/loading.gif" lazyload alt="blog-ssh3" />
+<figcaption aria-hidden="true">blog-ssh3</figcaption>
+</figure>
 <p>运行<code>ssh tcf</code> ,应该能正常登陆了</p>
-<ol start="4">
+<ol start="4" type="1">
 <li><p>再点击左下角远程连接</p>
-<p>然后会帮你在虚拟机端安装VSCode-Server (大概几分钟),然后就可以用VSCode进行远程开发了。</p>
-</li>
+<p>然后会帮你在虚拟机端安装VSCode-Server
+(大概几分钟),然后就可以用VSCode进行远程开发了。</p></li>
 </ol>
 
                 
