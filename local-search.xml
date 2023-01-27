@@ -4,6 +4,50 @@
   
   
   <entry>
+    <title>超参数调整(HP Tuning)与激活函数</title>
+    <link href="/2023/01/27/Code/DL/%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B4/"/>
+    <url>/2023/01/27/Code/DL/%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B4/</url>
+    
+    <content type="html"><![CDATA[<h1id="hphyperparameters调试tuning">HP(Hyperparameters)调试(Tuning)</h1><table><thead><tr class="header"><th style="text-align: center;">超参数</th><th style="text-align: center;">取值</th></tr></thead><tbody><tr class="odd"><td style="text-align: center;"><strong>学习速率<spanclass="math inline">\(α\)</span></strong></td><td style="text-align: center;">需调整</td></tr><tr class="even"><td style="text-align: center;">Momentum：<spanclass="math inline">\(β\)</span></td><td style="text-align: center;">$ 0.9$</td></tr><tr class="odd"><td style="text-align: center;">Adam：<spanclass="math inline">\(β_1\)</span></td><td style="text-align: center;">$ 0.9 $</td></tr><tr class="even"><td style="text-align: center;">Adam：<spanclass="math inline">\(β_2\)</span></td><td style="text-align: center;"><spanclass="math inline">\(0.999\)</span></td></tr><tr class="odd"><td style="text-align: center;">Adam：<spanclass="math inline">\(ε\)</span></td><td style="text-align: center;">$10^{−8} $</td></tr><tr class="even"><td style="text-align: center;">#layers</td><td style="text-align: center;"></td></tr><tr class="odd"><td style="text-align: center;">learning_rate decay</td><td style="text-align: center;"></td></tr><tr class="even"><td style="text-align: center;">#hidden unit</td><td style="text-align: center;"></td></tr><tr class="odd"><td style="text-align: center;">#mini-batch size</td><td style="text-align: center;"></td></tr></tbody></table><p>重要性 ： <span class="math inline">\(α\)</span>最为重要 其次为 <spanclass="math inline">\(β\)</span>，#mini-batch size ,#hidden unit...</p><p>参数选择有以下一些方法:</p><ol type="1"><li><p>随机选择点。例如现在有 α与 Adam 的 ε两个超参数要调试。在参数取值范围内随机选择若干点，可以发现哪个超参数更重要，影响更大.</p></li><li><p>由粗糙到精细的策略。由1，发现在某个点效果最好，可以预测在该点附近效果也很好，于是放大这块区域,更密集地取值. <img src="/img/imgDL/search.png" /></p></li><li><p>随机选择点时，有些参数不适合均匀(在线性轴上)的随机选择,就要选择适当的尺度.</p><p>例如 α，我们希望其在对数轴上随机取点(0.0001, 0.001, 0.01, 0.1,1)，我们可以<code>a= 10** (-4*np.random.rand())</code>，即可得到 <spanclass="math inline">\(a∈[10^{−4},10^0]\)</span>,相比对数尺度之下线性均匀尺度效率就十分低下。</p><p>类似可对β取点，比如<span class="math inline">\(β=0.9...0.999,1−β=0.1...0.001， 1−β∈[10^{−3},10^{−1}]\)</span></p></li></ol><h4id="两种调参思路-babysitting-training-many-models-in-parallel">两种调参思路:babysitting &amp; Training many models in parallel</h4><p><img src="/img/imgDL/2way.png" /></p><p>关键取决于你的计算资源</p><h3 id="batch-归一化batch-normalization---bn">2.Batch 归一化(BatchNormalization)---BN</h3><p>会使你的参数搜索问题变的容易，使神经网络对超参数的选择更加稳定，超参数的范围会更庞大，学习算法运行速度更快</p><h4 id="实现">2.1 实现</h4><blockquote><p><strong>一般框架都有，直接调用即可.</strong> :smile:</p></blockquote><p>训练 Logistic 回归时, 归一化<spanclass="math inline">\(X\)</span>可以加快学习过程.现在我们希望对隐藏层的<span class="math inline">\(Z\)</span>归一化.(或者<span class="math inline">\(A\)</span>)</p><p>对每一层的<span class="math inline">\(z\ or\a\)</span>(都可，一般选z)做如下操作:</p><p><span class="math display">\[平均值:\mu = \frac{1}{m} \sum_i z^{(i)} ,\\方差:\sigma^2 = \frac{1}{m} \sum_i (z^{(i)} - \mu)^2 \\\]</span> <span class="math display">\[z_{\text{norm}}^{(i)} = \frac{z^{(i)} - \mu}{\sqrt{\sigma^2 +\varepsilon}} \\\]</span> <span class="math display">\[\widetilde{z}^{(i)} = \gamma z_{\text{norm}}^{(i)} + \beta\]</span></p><p>(ε是为了防止分母为0.)</p><ul><li><p><span class="math inline">\(z_{norm}\)</span>就是标准化的 <spanclass="math inline">\(z\)</span>,<spanclass="math inline">\(z\)</span>的每一个分量都含有,平均值为0,方差为1。</p></li><li><p>不想让隐藏单元总是含有平均值0和方差1（也许隐藏单元有了不同的分布会有意义）,计算 <span class="math inline">\(\widetilde{z}^{(i)}\)</span>.</p></li><li><p>γ与 β是模型的学习参数, 梯度下降时会像更新神经网络的权重一样更新γ和 β。γ与 β的作用是：可以随意设置 z˜(i)的平均值。 当 $ γ=$ 且 $ β=μ $时,<span class="math inline">\(z˜(i)=z(i)\)</span>,通过赋予γ和β其他值，可以使你构造含其他平均值和方差的隐藏单元值。</p></li><li><p><strong>Batch归一化的作用</strong>：是它适合的归一化过程不只是输入层，同样适用于神经网络中的深度隐藏层。Batch归一化了一些隐藏单元值中的平均值和方差。</p></li><li><p>BN算法有一定的正则化效果，一般batch_size=64,128,256,越大，则正则化效果越弱,但是切莫将其视作正则化方法.</p></li><li><p>实际算法中一般不用线性AVG,而用计算<spanclass="math inline">\(\mu,\sigma\)</span>使用指数加权平均EMA(当然具体要看框架手册说明).</p></li></ul><h3 id="激活函数">激活函数</h3><blockquote><ol type="1"><li>Sigmoid(z)<br /><span class="math display">\[g(z)=\frac1{1+e^{-z}}\]</span>(注意：来自sigmoid 函数的输出值可以很容易地理解为概率。)这个一般用不到，但是二元回归时比较好(比如区分是不是猫),其他情况性能比tanh差输出的值介于0 和 1 之间，这使其成为二元分类的一个非常好的选择。</li></ol><p>如果输出小于 0.5，则可以将其归类为 0，如果输出大于 0.5，则归类为 1。它也可以用 tanh 来完成，但是它不太方便，因为输出在-1 和 1 之间。</p></blockquote><blockquote><ol start="2" type="1"><li>tanh(z) <spanclass="math display">\[g(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}=\frac{2}{1+e^{-2x}}-1\]</span></li></ol><p>我们可以发现Tanh 函数可以看作放大并平移的Logistic 函数，其值域是(−1,1)。Tanh与sigmoid的关系如下： <spanclass="math display">\[tanh(x)=2sigmoid(2x)-1\]</span></p><p>tanh激活函数通常比Sigmoid激活函数性能更好，因为其输出的平均值接近于零，因此在下一层，可以更好地集中数据。</p></blockquote><blockquote><p>注意：在一般的二元分类问题中，tanh 函数用于隐藏层，而 sigmoid函数用于输出层，但这并不是固定的，需要根据特定问题进行调整。</p></blockquote><blockquote><ol start="3" type="1"><li>ReLU(z)(推荐)<br /><span class="math display">\[g(z)=max(0,z)\]</span>一般不知道选什么选这个 (有一个对负半区进行修正的leakyRelu,通常表现更好但是没有在实践中运用)</li></ol></blockquote><p>ReLU函数的不足：</p><ul><li><p>当输入为负时，ReLU完全失效，在正向传播过程中，这不是问题。有些区域很敏感，有些则不敏感。但是在反向传播过程中，如果输入负数，则梯度将完全为零；</p></li><li><p>【DeadReLU问题】ReLU神经元在训练时比较容易“死亡”。在训练时，如果参数在一次不恰当的更新后，第一个隐藏层中的某个ReLU神经元在所有的训练数据上都不能被激活，那么这个神经元自身参数的梯度永远都会是0，在以后的训练过程中永远不能被激活。这种现象称为死亡ReLU问题，并且也有可能会发生在其他隐藏层。</p></li><li><p>不以零为中心：和 Sigmoid 激活函数类似，ReLU函数的输出不以零为中心，ReLU 函数的输出为 0或正数,给后一层的神经网络引入偏置偏移，会影响梯度下降的效率。</p></li></ul><p>其他激活函数详见<ahref="https://zhuanlan.zhihu.com/p/364620596">知乎帖子</a></p><h4 id="多类别分类----softmax-as-a-激活函数">多类别分类--- softmax as a激活函数</h4><p>实际是二元回归推广到C元回归,一般有Softmax和Hardmax,Softmax给出的是每个分类的概率. 而对应的 Hardmax 则是将最大的元素输出为 1,其余元素置 0.</p><p>类似 Logistic 回归, 但 Softmax 回归能识别多个分类. 因此 <spanclass="math inline">\(\hat y\)</span>是 C×1 维的向量,给出C个分类的概率,所有概率加起来应该为1.</p><p>在神经网络的最后一层, 我们像往常一样计算各层的线性部分, 当计算了z[L]=W[L]a[L−1]+b[L]之后, 使用 Softmax 激活函数.</p><p><span class="math display">\[a^{[L]}_i =\frac{e^{z^{[L]}_i}}{\sum_{j=1}^{4} e^{z^{[L]}_i}}\]</span></p><p>Softmax 分类中, 一般使用的损失函数及反向传播的导数是</p><p><span class="math display">\[L(\hat{y}, y) = -\sum_{j=1}^{n}y_j \text{log } \hat{y}_j \\\]</span></p><p><span class="math display">\[J(w^{[1]}, b^{[1]}, ...) = \frac{1}{m} \sum_{i=1}^m L(\hat{y}^{(i)},y^{(i)}) \\\]</span></p><p><span class="math display">\[\frac{\partial J}{\partial z^{[L]}} = \hat{y} - y\]</span></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>DL</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Python虚拟环境--以tensorflow安装配置为例</title>
+    <link href="/2023/01/27/Code/env/py_env/"/>
+    <url>/2023/01/27/Code/env/py_env/</url>
+    
+    <content type="html"><![CDATA[<h1 id="python-tensorflow虚拟环境----基于anaconda">pythontensorflow虚拟环境 ---基于Anaconda</h1><p><strong>date:</strong> 2023/01/27</p><p>python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处:封闭性好易于管理，按需分配节省内存等等。</p><p>最近在学习DL时正好又要搭建一个tensorflow的环境，因此在此用这篇文章回顾自己基于conda包安装tensorflow环境的过程。</p><p>环境： - windows 11 shell</p><ul><li>anaconda prompt3(默认已安装好anaconda并添加入env-path)</li></ul><blockquote><p>题外话 : chanel 记得换镜像源</p></blockquote><p>在shell中操作如下: <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">查看源</span><br>conda config --show-sources<br><span class="hljs-meta prompt_"># </span><span class="language-bash">建议使用科大源.下面图片是清华源的例子，因为清华源貌似也挺慢的所以换科大源了</span><br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/msys2/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/bioconda/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/menpo/<br>conda config --set show_channel_urls yes<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">设置搜索时显示通道地址</span><br>conda config --set show_channel_urls yes<br></code></pre></td></tr></table></figure></p><p>命令执行完后，会生成~/.condarc(Linux/Mac)或C:_NAME.condarc文件,这便是配置文件，执行后应该长这样(像上面的改配置也可以直接修改这个文件):</p><p><img src="/img/py_env/config_chanel.png" />要把default删除或者移到第一个，因为pip是按这个列表从下往上依次执行,没找到相应的文件则从上一个找.</p><h2id="以创建tensorflow的安装与卸载环境为例">以创建tensorflow的安装与卸载环境为例</h2><p>anacondaprompt3打开会是一个叫base的基环境，也就是最基本的环境,python支持你自行创建多个虚拟环境以应对不同的开发,这里是以安装一个tensorflow的环境为例.</p><p>1.创建一个tensorflow环境创建一个环境用于安装tensorflow，环境名可以自己命名，选择python的版本。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda create -n 环境的名字 python=版本号</span><br>conda create -n tensorflow2 python=3.7<br></code></pre></td></tr></table></figure><p>2.激活tensorflow环境</p><p><code>activate tensorflow2</code></p><p>3.查看当前可以使用的tensorflow版本 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda search  --full -name tensorflow<span class="hljs-comment">#下面这条运行不了就运行这条，是版本问题</span></span><br>conda search  --full tensorflow<br></code></pre></td></tr></table></figure></p><ol start="4" type="1"><li>查看tensorflow包信息及依赖关系</li></ol><p><code>conda  info  tensorflow</code></p><ol start="5" type="1"><li><p>安装tensorflow</p><p>在自己创建的环境下安装tensorflow</p></li></ol><p><code>pip install tensorflow</code>或<code>pip install --upgrade --ignore-installed      tensorflow</code>如果速度很慢就换用科大源(亲测源很快，妮可还是妮可) <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pip install tensorflow-cpu==2.2.0 -i  https://pypi.mirrors.ustc.edu.cn/simple  <br></code></pre></td></tr></table></figure></p><p>安装完之后 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">activate tensorflow2<br><span class="hljs-meta prompt_">#</span><span class="language-bash">...</span><br><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; import tensorflow as tf</span><br></code></pre></td></tr></table></figure></p><p>---没报错请跳过这段--- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">TypeError: Descriptors cannot not be created directly.<br>If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc &gt;= 3.19.0.<br>If you cannot immediately regenerate your protos, some other possible workarounds are:<br> 1. Downgrade the protobuf package to 3.20.x or lower.<br> 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).<br></code></pre></td></tr></table></figure> 是这个protobuf包等级太高了,于是<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-comment"># 卸载当前版本（我的是3.9.2）</span><br><span class="hljs-attribute">pip</span> uninstall protobuf<br><span class="hljs-comment"># 安装低版本</span><br><span class="hljs-attribute">pip</span> install protobuf==<span class="hljs-number">3</span>.<span class="hljs-number">20</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure> 然后就行了.</p><hr /><p>如图所示则已安装成功.bless you! <img src="/img/py_env/tf_env.png" />然后exit()或者Ctrl+z退出.</p><blockquote><p>注意: 这个虚拟环境在C:\Users\anaconda3\envs目录下</p></blockquote><h3id="下面看看在vscode上的jupyter-notebook运行.">下面看看在<strong>VSCode</strong>上的jupyternotebook运行.</h3><p>VSCode貌似没有自动找到我的解释器路径,于是ctrl+shift+p设置里输入<code>select python interpreter</code>,手动找到你的环境下的python比如：<code>C:\Users\username\anaconda3\envs\tensorflow2\python.exe</code></p><p>然后重启vscode或者设置里面输入<code>reload window</code></p><p>现在可以修改jupyter book的kernel了!然鹅运行还不行 <imgsrc="/img/py_env/ero2.png" /></p><p>按他说的做.打开终端运行</p><p><code>conda install -n base_tf ipykernel --update-deps --force-reinstall</code></p><p><img src="/img/py_env/terminal.png" /></p><p>然后一路yes,就能正常运行了</p><p><img src="/img/py_env/suceess.png" /></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>环境</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>VSCode</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Optimization in DL</title>
     <link href="/2023/01/26/Code/DL/Notes5/"/>
     <url>/2023/01/26/Code/DL/Notes5/</url>
@@ -92,14 +136,14 @@
     
     <categories>
       
-      <category>VSCode环境</category>
+      <category>环境</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>vscode</tag>
+      <tag>VSCode</tag>
       
       <tag>远程SSH</tag>
       
@@ -171,14 +215,14 @@
     
     <categories>
       
-      <category>VSCode环境</category>
+      <category>环境</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>vscode</tag>
+      <tag>VSCode</tag>
       
       <tag>json</tag>
       

@@ -16,27 +16,27 @@
   <meta name="author" content="Poetrilin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="环境:  本地: windows11 腾讯云服务器: ubuntu 20.04   首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),  注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察sudo su ubuntu  在VSCode上下载插件Renote-SSH,然后配置ss">
+    <meta name="description" content="python tensorflow虚拟环境 ---基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理，按需分配节省内存等等。 最近在学习DL时正好又要搭建一个tensorflow的环境，因此在此用这篇文章回顾自己基于conda包安装tensorflow环境的过程。 环境： - w">
 <meta property="og:type" content="article">
-<meta property="og:title" content="VSCode远程SSH连接">
-<meta property="og:url" content="http://poetrilin.github.io/2023/01/24/Code/env/vscode%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
+<meta property="og:title" content="Python虚拟环境--以tensorflow安装配置为例">
+<meta property="og:url" content="http://poetrilin.github.io/2023/01/27/Code/env/py_env/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="环境:  本地: windows11 腾讯云服务器: ubuntu 20.04   首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),  注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察sudo su ubuntu  在VSCode上下载插件Renote-SSH,然后配置ss">
+<meta property="og:description" content="python tensorflow虚拟环境 ---基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理，按需分配节省内存等等。 最近在学习DL时正好又要搭建一个tensorflow的环境，因此在此用这篇文章回顾自己基于conda包安装tensorflow环境的过程。 环境： - w">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://poetrilin.github.io/img/blogssh1.png">
-<meta property="og:image" content="http://poetrilin.github.io/img/blog-ssh2.png">
-<meta property="og:image" content="http://poetrilin.github.io/img/blog-ssh3.png">
-<meta property="article:published_time" content="2023-01-24T02:01:56.672Z">
-<meta property="article:modified_time" content="2023-01-27T10:00:24.438Z">
+<meta property="og:image" content="http://poetrilin.github.io/img/py_env/config_chanel.png">
+<meta property="og:image" content="http://poetrilin.github.io/img/py_env/tf_env.png">
+<meta property="og:image" content="http://poetrilin.github.io/img/py_env/terminal.png">
+<meta property="og:image" content="http://poetrilin.github.io/img/py_env/suceess.png">
+<meta property="article:published_time" content="2023-01-27T09:39:48.853Z">
+<meta property="article:modified_time" content="2023-01-27T13:01:37.724Z">
 <meta property="article:author" content="Poetrilin">
 <meta property="article:tag" content="VSCode">
-<meta property="article:tag" content="远程SSH">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://poetrilin.github.io/img/blogssh1.png">
+<meta name="twitter:image" content="http://poetrilin.github.io/img/py_env/config_chanel.png">
   
   
   
-  <title>VSCode远程SSH连接 - Hexo</title>
+  <title>Python虚拟环境--以tensorflow安装配置为例 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +214,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="VSCode远程SSH连接"></span>
+            <span id="subtitle" data-typed-text="Python虚拟环境--以tensorflow安装配置为例"></span>
           
         </div>
 
@@ -225,8 +225,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-01-24 10:01" pubdate>
-          2023年1月24日 上午
+        <time datetime="2023-01-27 17:39" pubdate>
+          2023年1月27日 下午
         </time>
       </span>
     
@@ -237,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          485 字
+          2.6k 字
         
       </span>
     
@@ -277,50 +277,72 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">VSCode远程SSH连接</h1>
+            <h1 style="display: none">Python虚拟环境--以tensorflow安装配置为例</h1>
             
             
               <div class="markdown-body">
                 
-                <p>环境:</p>
+                <h1 id="python-tensorflow虚拟环境----基于anaconda">python
+tensorflow虚拟环境 ---基于Anaconda</h1>
+<p><strong>date:</strong> 2023/01/27</p>
+<p>python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处:
+封闭性好易于管理，按需分配节省内存等等。</p>
+<p>最近在学习DL时正好又要搭建一个tensorflow的环境，因此在此用这篇文章回顾自己基于conda包安装tensorflow环境的过程。</p>
+<p>环境： - windows 11 shell</p>
 <ul>
-<li>本地: windows11</li>
-<li>腾讯云服务器: ubuntu 20.04</li>
+<li>anaconda prompt3(默认已安装好anaconda并添加入env-path)</li>
 </ul>
-<ol type="1">
-<li><p>首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D://tcf//tcf.pem),</p>
 <blockquote>
-<p>注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察<code>sudo su ubuntu</code></p>
-</blockquote></li>
-<li><p>在VSCode上下载插件Renote-SSH,然后配置ssh-configration</p></li>
-</ol>
-<figure>
-<img src="/img/blogssh1.png" srcset="/img/loading.gif" lazyload alt="blog-ssh1" />
-<figcaption aria-hidden="true">blog-ssh1</figcaption>
-</figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">Host tcf           //你的名字，可自取<br>    HostName 你的IP      <br>    Port 22             //SSH连接端口为22<br>    User ubuntu       //默认<br>    IdentityFile D:\tcf\tcf.pem   //你的私钥地址<br></code></pre></td></tr></table></figure>
-<ol type="1">
-<li>新建一个终端，运行<code>ssh tcf</code></li>
-</ol>
-<p>然后Warning： 说是权限too
-open无法进入，大概是windows给用户的权限太多导致的一些问题</p>
-<figure>
-<img src="/img/blog-ssh2.png" srcset="/img/loading.gif" lazyload alt="blog-ssh2" />
-<figcaption aria-hidden="true">blog-ssh2</figcaption>
-</figure>
-<p><a
-href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20too%20open错误详细解决方案_菜到不知所措的博客-CSDN博客_are%20too%20open%5D(https://blog.csdn.net/weixin_40415591/article/details/121661857)">参考博客</a></p>
-<p>最后保证你的权限里只有所有者一个即可。</p>
-<figure>
-<img src="/img/blog-ssh3.png" srcset="/img/loading.gif" lazyload alt="blog-ssh3" />
-<figcaption aria-hidden="true">blog-ssh3</figcaption>
-</figure>
-<p>运行<code>ssh tcf</code> ,应该能正常登陆了</p>
+<p>题外话 : chanel 记得换镜像源</p>
+</blockquote>
+<p>在shell中操作如下: <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">查看源</span><br>conda config --show-sources<br><span class="hljs-meta prompt_"># </span><span class="language-bash">建议使用科大源.下面图片是清华源的例子，因为清华源貌似也挺慢的所以换科大源了</span><br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/msys2/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/bioconda/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/menpo/<br>conda config --set show_channel_urls yes<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">设置搜索时显示通道地址</span><br>conda config --set show_channel_urls yes<br></code></pre></td></tr></table></figure></p>
+<p>命令执行完后，会生成~/.condarc(Linux/Mac)或C:_NAME.condarc文件,这便是配置文件，执行后应该长这样(像上面的改配置也可以直接修改这个文件):</p>
+<p><img src="/img/py_env/config_chanel.png" srcset="/img/loading.gif" lazyload />
+要把default删除或者移到第一个，因为pip是按这个列表从下往上依次执行,没找到相应的文件则从上一个找.</p>
+<h2
+id="以创建tensorflow的安装与卸载环境为例">以创建tensorflow的安装与卸载环境为例</h2>
+<p>anaconda
+prompt3打开会是一个叫base的基环境，也就是最基本的环境,python支持你自行创建多个虚拟环境以应对不同的开发,这里是以安装一个tensorflow的环境为例.</p>
+<p>1.创建一个tensorflow环境
+创建一个环境用于安装tensorflow，环境名可以自己命名，选择python的版本。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda create -n 环境的名字 python=版本号</span><br>conda create -n tensorflow2 python=3.7<br></code></pre></td></tr></table></figure>
+<p>2.激活tensorflow环境</p>
+<p><code>activate tensorflow2</code></p>
+<p>3.查看当前可以使用的tensorflow版本 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda search  --full -name tensorflow<span class="hljs-comment">#下面这条运行不了就运行这条，是版本问题</span></span><br>conda search  --full tensorflow<br></code></pre></td></tr></table></figure></p>
 <ol start="4" type="1">
-<li><p>再点击左下角远程连接</p>
-<p>然后会帮你在虚拟机端安装VSCode-Server
-(大概几分钟),然后就可以用VSCode进行远程开发了。</p></li>
+<li>查看tensorflow包信息及依赖关系</li>
 </ol>
+<p><code>conda  info  tensorflow</code></p>
+<ol start="5" type="1">
+<li><p>安装tensorflow</p>
+<p>在自己创建的环境下安装tensorflow</p></li>
+</ol>
+<p><code>pip install tensorflow</code>或
+<code>pip install --upgrade --ignore-installed      tensorflow</code>
+如果速度很慢就换用科大源(亲测源很快，妮可还是妮可) <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pip install tensorflow-cpu==2.2.0 -i  https://pypi.mirrors.ustc.edu.cn/simple  <br></code></pre></td></tr></table></figure></p>
+<p>安装完之后 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">activate tensorflow2<br><span class="hljs-meta prompt_">#</span><span class="language-bash">...</span><br><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; import tensorflow as tf</span><br></code></pre></td></tr></table></figure></p>
+<p>---没报错请跳过这段--- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">TypeError: Descriptors cannot not be created directly.<br>If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc &gt;= 3.19.0.<br>If you cannot immediately regenerate your protos, some other possible workarounds are:<br> 1. Downgrade the protobuf package to 3.20.x or lower.<br> 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).<br></code></pre></td></tr></table></figure> 是这个protobuf包等级太高了,于是
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-comment"># 卸载当前版本（我的是3.9.2）</span><br><span class="hljs-attribute">pip</span> uninstall protobuf<br><span class="hljs-comment"># 安装低版本</span><br><span class="hljs-attribute">pip</span> install protobuf==<span class="hljs-number">3</span>.<span class="hljs-number">20</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure> 然后就行了.</p>
+<hr />
+<p>如图所示则已安装成功.bless you! <img src="/img/py_env/tf_env.png" srcset="/img/loading.gif" lazyload />
+然后exit()或者Ctrl+z退出.</p>
+<blockquote>
+<p>注意: 这个虚拟环境在C:\Users\anaconda3\envs目录下</p>
+</blockquote>
+<h3
+id="下面看看在vscode上的jupyter-notebook运行.">下面看看在<strong>VSCode</strong>上的jupyter
+notebook运行.</h3>
+<p>VSCode貌似没有自动找到我的解释器路径,于是ctrl
++shift+p设置里输入<code>select python interpreter</code>,手动找到你的环境下的python比如：
+<code>C:\Users\username\anaconda3\envs\tensorflow2\python.exe</code></p>
+<p>然后重启vscode或者设置里面输入<code>reload window</code></p>
+<p>现在可以修改jupyter book的kernel了!然鹅运行还不行 <img
+src="/img/py_env/ero2.png" srcset="/img/loading.gif" lazyload /></p>
+<p>按他说的做.打开终端运行</p>
+<p><code>conda install -n base_tf ipykernel --update-deps --force-reinstall</code></p>
+<p><img src="/img/py_env/terminal.png" srcset="/img/loading.gif" lazyload /></p>
+<p>然后一路yes,就能正常运行了</p>
+<p><img src="/img/py_env/suceess.png" srcset="/img/loading.gif" lazyload /></p>
 
                 
               </div>
@@ -356,8 +378,6 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
       
         <a href="/tags/VSCode/">#VSCode</a>
       
-        <a href="/tags/%E8%BF%9C%E7%A8%8BSSH/">#远程SSH</a>
-      
     </div>
   
 </div>
@@ -368,8 +388,8 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>VSCode远程SSH连接</div>
-      <div>http://poetrilin.github.io/2023/01/24/Code/env/vscode远程连接服务器/</div>
+      <div>Python虚拟环境--以tensorflow安装配置为例</div>
+      <div>http://poetrilin.github.io/2023/01/27/Code/env/py_env/</div>
     </div>
     <div class="license-meta">
       
@@ -408,9 +428,9 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/01/24/Code/DL/DL%E5%8E%9F%E7%90%86/" title="DL基本原理">
+                      <a href="/2023/01/27/Code/DL/%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B4/" title="超参数调整(HP Tuning)与激活函数">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">DL基本原理</span>
+                        <span class="hidden-mobile">超参数调整(HP Tuning)与激活函数</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -418,8 +438,8 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/01/22/Code/CPP/lamba%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="lambda 表达式 in C++">
-                        <span class="hidden-mobile">lambda 表达式 in C++</span>
+                      <a href="/2023/01/26/Code/DL/Notes5/" title="Optimization in DL">
+                        <span class="hidden-mobile">Optimization in DL</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

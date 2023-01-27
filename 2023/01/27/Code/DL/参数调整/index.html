@@ -16,27 +16,24 @@
   <meta name="author" content="Poetrilin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="环境:  本地: windows11 腾讯云服务器: ubuntu 20.04   首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),  注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察sudo su ubuntu  在VSCode上下载插件Renote-SSH,然后配置ss">
+    <meta name="description" content="HP(Hyperparameters)调试(Tuning)    超参数 取值     学习速率\(α\) 需调整   Momentum：\(β\) $ 0.9$   Adam：\(β_1\) $ 0.9 $   Adam：\(β_2\) \(0.999\)   Adam：\(ε\) $10^{−8} $   #layers">
 <meta property="og:type" content="article">
-<meta property="og:title" content="VSCode远程SSH连接">
-<meta property="og:url" content="http://poetrilin.github.io/2023/01/24/Code/env/vscode%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
+<meta property="og:title" content="超参数调整(HP Tuning)与激活函数">
+<meta property="og:url" content="http://poetrilin.github.io/2023/01/27/Code/DL/%E5%8F%82%E6%95%B0%E8%B0%83%E6%95%B4/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="环境:  本地: windows11 腾讯云服务器: ubuntu 20.04   首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D:&#x2F;&#x2F;tcf&#x2F;&#x2F;tcf.pem),  注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察sudo su ubuntu  在VSCode上下载插件Renote-SSH,然后配置ss">
+<meta property="og:description" content="HP(Hyperparameters)调试(Tuning)    超参数 取值     学习速率\(α\) 需调整   Momentum：\(β\) $ 0.9$   Adam：\(β_1\) $ 0.9 $   Adam：\(β_2\) \(0.999\)   Adam：\(ε\) $10^{−8} $   #layers">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://poetrilin.github.io/img/blogssh1.png">
-<meta property="og:image" content="http://poetrilin.github.io/img/blog-ssh2.png">
-<meta property="og:image" content="http://poetrilin.github.io/img/blog-ssh3.png">
-<meta property="article:published_time" content="2023-01-24T02:01:56.672Z">
-<meta property="article:modified_time" content="2023-01-27T10:00:24.438Z">
+<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/search.png">
+<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/2way.png">
+<meta property="article:published_time" content="2023-01-27T12:40:25.671Z">
+<meta property="article:modified_time" content="2023-01-27T13:06:38.241Z">
 <meta property="article:author" content="Poetrilin">
-<meta property="article:tag" content="VSCode">
-<meta property="article:tag" content="远程SSH">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://poetrilin.github.io/img/blogssh1.png">
+<meta name="twitter:image" content="http://poetrilin.github.io/img/imgDL/search.png">
   
   
   
-  <title>VSCode远程SSH连接 - Hexo</title>
+  <title>超参数调整(HP Tuning)与激活函数 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +211,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="VSCode远程SSH连接"></span>
+            <span id="subtitle" data-typed-text="超参数调整(HP Tuning)与激活函数"></span>
           
         </div>
 
@@ -225,8 +222,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-01-24 10:01" pubdate>
-          2023年1月24日 上午
+        <time datetime="2023-01-27 20:40" pubdate>
+          2023年1月27日 晚上
         </time>
       </span>
     
@@ -237,7 +234,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          485 字
+          2.9k 字
         
       </span>
     
@@ -277,50 +274,200 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">VSCode远程SSH连接</h1>
+            <h1 style="display: none">超参数调整(HP Tuning)与激活函数</h1>
             
             
               <div class="markdown-body">
                 
-                <p>环境:</p>
-<ul>
-<li>本地: windows11</li>
-<li>腾讯云服务器: ubuntu 20.04</li>
-</ul>
+                <h1
+id="hphyperparameters调试tuning">HP(Hyperparameters)调试(Tuning)</h1>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">超参数</th>
+<th style="text-align: center;">取值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><strong>学习速率<span
+class="math inline">\(α\)</span></strong></td>
+<td style="text-align: center;">需调整</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Momentum：<span
+class="math inline">\(β\)</span></td>
+<td style="text-align: center;">$ 0.9$</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Adam：<span
+class="math inline">\(β_1\)</span></td>
+<td style="text-align: center;">$ 0.9 $</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">Adam：<span
+class="math inline">\(β_2\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(0.999\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">Adam：<span
+class="math inline">\(ε\)</span></td>
+<td style="text-align: center;">$10^{−8} $</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">#layers</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">learning_rate decay</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">#hidden unit</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">#mini-batch size</td>
+<td style="text-align: center;"></td>
+</tr>
+</tbody>
+</table>
+<p>重要性 ： <span class="math inline">\(α\)</span>最为重要 其次为 <span
+class="math inline">\(β\)</span>，#mini-batch size ,#hidden unit...</p>
+<p>参数选择有以下一些方法:</p>
 <ol type="1">
-<li><p>首先在腾讯云平台创建密钥并将公钥与你要用的实例绑定,下载私钥到本机(地址假设为D://tcf//tcf.pem),</p>
+<li><p>随机选择点。例如现在有 α与 Adam 的 ε
+两个超参数要调试。在参数取值范围内随机选择若干点，
+可以发现哪个超参数更重要，影响更大.</p></li>
+<li><p>由粗糙到精细的策略。由1，
+发现在某个点效果最好，可以预测在该点附近效果也很好，于是放大这块区域,
+更密集地取值. <img src="/img/imgDL/search.png" srcset="/img/loading.gif" lazyload /></p></li>
+<li><p>随机选择点时，有些参数不适合均匀(在线性轴上)的随机选择,就要选择适当的尺度.</p>
+<p>例如 α，我们希望其在对数轴上随机取点(0.0001, 0.001, 0.01, 0.1,
+1)，我们可以<code>a= 10** (-4*np.random.rand())</code>，即可得到 <span
+class="math inline">\(a∈[10^{−4},10^0]\)</span>,
+相比对数尺度之下线性均匀尺度效率就十分低下。</p>
+<p>类似可对β取点，比如<span class="math inline">\(β=0.9...0.999,1−β=
+0.1...0.001， 1−β∈[10^{−3},10^{−1}]\)</span></p></li>
+</ol>
+<h4
+id="两种调参思路-babysitting-training-many-models-in-parallel">两种调参思路:
+babysitting &amp; Training many models in parallel</h4>
+<p><img src="/img/imgDL/2way.png" srcset="/img/loading.gif" lazyload /></p>
+<p>关键取决于你的计算资源</p>
+<h3 id="batch-归一化batch-normalization---bn">2.Batch 归一化(Batch
+Normalization)---BN</h3>
+<p>会使你的参数搜索问题变的容易，使神经网络对超参数的选择更加稳定，超参数的范围会更庞大，学习算法运行速度更快</p>
+<h4 id="实现">2.1 实现</h4>
 <blockquote>
-<p>注意:密钥绑定的是名为ubuntu的用户,所以你可以先在实例上切换用户为ubuntu观察<code>sudo su ubuntu</code></p>
-</blockquote></li>
-<li><p>在VSCode上下载插件Renote-SSH,然后配置ssh-configration</p></li>
-</ol>
-<figure>
-<img src="/img/blogssh1.png" srcset="/img/loading.gif" lazyload alt="blog-ssh1" />
-<figcaption aria-hidden="true">blog-ssh1</figcaption>
-</figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">Host tcf           //你的名字，可自取<br>    HostName 你的IP      <br>    Port 22             //SSH连接端口为22<br>    User ubuntu       //默认<br>    IdentityFile D:\tcf\tcf.pem   //你的私钥地址<br></code></pre></td></tr></table></figure>
+<p><strong>一般框架都有，直接调用即可.</strong> :smile:</p>
+</blockquote>
+<p>训练 Logistic 回归时, 归一化<span
+class="math inline">\(X\)</span>可以加快学习过程.
+现在我们希望对隐藏层的<span class="math inline">\(Z\)</span>归一化.
+(或者<span class="math inline">\(A\)</span>)</p>
+<p>对每一层的<span class="math inline">\(z\ or\
+a\)</span>(都可，一般选z)做如下操作:</p>
+<p><span class="math display">\[
+平均值:\mu = \frac{1}{m} \sum_i z^{(i)} ,\\
+方差:\sigma^2 = \frac{1}{m} \sum_i (z^{(i)} - \mu)^2 \\
+\]</span> <span class="math display">\[
+z_{\text{norm}}^{(i)} = \frac{z^{(i)} - \mu}{\sqrt{\sigma^2 +
+\varepsilon}} \\
+\]</span> <span class="math display">\[
+\widetilde{z}^{(i)} = \gamma z_{\text{norm}}^{(i)} + \beta
+\]</span></p>
+<p>(ε是为了防止分母为0.)</p>
+<ul>
+<li><p><span class="math inline">\(z_{norm}\)</span>就是标准化的 <span
+class="math inline">\(z\)</span>,<span
+class="math inline">\(z\)</span>的每一个分量都含有,平均值为0,
+方差为1。</p></li>
+<li><p>不想让隐藏单元总是含有平均值0和方差1（也许隐藏单元有了不同的分布会有意义）,
+计算 <span class="math inline">\(\widetilde{z}^{(i)}\)</span>.</p></li>
+<li><p>γ与 β是模型的学习参数, 梯度下降时会像更新神经网络的权重一样更新
+γ和 β。γ与 β的作用是：可以随意设置 z˜(i)的平均值。 当 $ γ=$ 且 $ β=μ $
+时,<span class="math inline">\(z˜(i)=z(i)\)</span>,
+通过赋予γ和β其他值，可以使你构造含其他平均值和方差的隐藏单元值。</p></li>
+<li><p><strong>Batch归一化的作用</strong>：是它适合的归一化过程不只是输入层，
+同样适用于神经网络中的深度隐藏层。Batch归一化了一些隐藏单元值中的平均值和方差。</p></li>
+<li><p>BN算法有一定的正则化效果，一般batch_size=
+64,128,256,越大，则正则化效果越弱,但是切莫将其视作正则化方法.</p></li>
+<li><p>实际算法中一般不用线性AVG,而用计算<span
+class="math inline">\(\mu,\sigma\)</span>使用指数加权平均EMA(当然具体要看框架手册说明)
+.</p></li>
+</ul>
+<h3 id="激活函数">激活函数</h3>
+<blockquote>
 <ol type="1">
-<li>新建一个终端，运行<code>ssh tcf</code></li>
+<li>Sigmoid(z)<br />
+<span class="math display">\[g(z)=\frac1{1+e^{-z}}\]</span>
+(注意：来自sigmoid 函数的输出值可以很容易地理解为概率。)
+这个一般用不到，但是二元回归时比较好(比如区分是不是猫),其他情况性能比tanh差输出的值介于
+0 和 1 之间，这使其成为二元分类的一个非常好的选择。</li>
 </ol>
-<p>然后Warning： 说是权限too
-open无法进入，大概是windows给用户的权限太多导致的一些问题</p>
-<figure>
-<img src="/img/blog-ssh2.png" srcset="/img/loading.gif" lazyload alt="blog-ssh2" />
-<figcaption aria-hidden="true">blog-ssh2</figcaption>
-</figure>
-<p><a
-href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20too%20open错误详细解决方案_菜到不知所措的博客-CSDN博客_are%20too%20open%5D(https://blog.csdn.net/weixin_40415591/article/details/121661857)">参考博客</a></p>
-<p>最后保证你的权限里只有所有者一个即可。</p>
-<figure>
-<img src="/img/blog-ssh3.png" srcset="/img/loading.gif" lazyload alt="blog-ssh3" />
-<figcaption aria-hidden="true">blog-ssh3</figcaption>
-</figure>
-<p>运行<code>ssh tcf</code> ,应该能正常登陆了</p>
-<ol start="4" type="1">
-<li><p>再点击左下角远程连接</p>
-<p>然后会帮你在虚拟机端安装VSCode-Server
-(大概几分钟),然后就可以用VSCode进行远程开发了。</p></li>
+<p>如果输出小于 0.5，则可以将其归类为 0，如果输出大于 0.5，则归类为 1。
+它也可以用 tanh 来完成，但是它不太方便，因为输出在-1 和 1 之间。</p>
+</blockquote>
+<blockquote>
+<ol start="2" type="1">
+<li>tanh(z) <span
+class="math display">\[g(z)=\frac{e^{z}-e^{-z}}{e^{z}+e^{-z}}=\frac{2}{1+e^{-2x}}-1\]</span></li>
 </ol>
+<p>我们可以发现Tanh 函数可以看作放大并平移的Logistic 函数，其值域是(−1,
+1)。Tanh与sigmoid的关系如下： <span
+class="math display">\[tanh(x)=2sigmoid(2x)-1\]</span></p>
+<p>tanh激活函数通常比Sigmoid激活函数性能更好，因为其输出的平均值接近于零，因此在下一层，可以更好地集中数据。</p>
+</blockquote>
+<blockquote>
+<p>注意：在一般的二元分类问题中，tanh 函数用于隐藏层，而 sigmoid
+函数用于输出层，但这并不是固定的，需要根据特定问题进行调整。</p>
+</blockquote>
+<blockquote>
+<ol start="3" type="1">
+<li>ReLU(z)(推荐)<br />
+<span class="math display">\[g(z)=max(0,z)\]</span>
+一般不知道选什么选这个 (有一个对负半区进行修正的leaky
+Relu,通常表现更好但是没有在实践中运用)</li>
+</ol>
+</blockquote>
+<p>ReLU函数的不足：</p>
+<ul>
+<li><p>当输入为负时，ReLU
+完全失效，在正向传播过程中，这不是问题。有些区域很敏感，有些则不敏感。但是在反向传播过程中，如果输入负数，则梯度将完全为零；</p></li>
+<li><p>【Dead
+ReLU问题】ReLU神经元在训练时比较容易“死亡”。在训练时，如果参数在一次不恰当的更新后，第一个隐藏层中的某个ReLU
+神经元在所有的训练数据上都不能被激活，那么这个神经元自身参数的梯度永远都会是0，在以后的训练过程中永远不能被激活。这种现象称为死亡ReLU问题，并且也有可能会发生在其他隐藏层。</p></li>
+<li><p>不以零为中心：和 Sigmoid 激活函数类似，ReLU
+函数的输出不以零为中心，ReLU 函数的输出为 0
+或正数,给后一层的神经网络引入偏置偏移，会影响梯度下降的效率。</p></li>
+</ul>
+<p>其他激活函数详见<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/364620596">知乎帖子</a></p>
+<h4 id="多类别分类----softmax-as-a-激活函数">多类别分类--- softmax as a
+激活函数</h4>
+<p>实际是二元回归推广到C元回归,一般有Softmax和Hardmax,Softmax
+给出的是每个分类的概率. 而对应的 Hardmax 则是将最大的元素输出为 1,
+其余元素置 0.</p>
+<p>类似 Logistic 回归, 但 Softmax 回归能识别多个分类. 因此 <span
+class="math inline">\(\hat y\)</span>是 C×1 维的向量,
+给出C个分类的概率,所有概率加起来应该为1.</p>
+<p>在神经网络的最后一层, 我们像往常一样计算各层的线性部分, 当计算了
+z[L]=W[L]a[L−1]+b[L]之后, 使用 Softmax 激活函数.</p>
+<p><span class="math display">\[a^{[L]}_i =
+\frac{e^{z^{[L]}_i}}{\sum_{j=1}^{4} e^{z^{[L]}_i}}\]</span></p>
+<p>Softmax 分类中, 一般使用的损失函数及反向传播的导数是</p>
+<p><span class="math display">\[
+L(\hat{y}, y) = -\sum_{j=1}^{n}y_j \text{log } \hat{y}_j \\
+\]</span></p>
+<p><span class="math display">\[
+J(w^{[1]}, b^{[1]}, ...) = \frac{1}{m} \sum_{i=1}^m L(\hat{y}^{(i)},
+y^{(i)}) \\
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial J}{\partial z^{[L]}} = \hat{y} - y
+\]</span></p>
 
                 
               </div>
@@ -339,7 +486,7 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%8E%AF%E5%A2%83/" class="category-chain-item">环境</a>
+  <a href="/categories/DL/" class="category-chain-item">DL</a>
   
   
 
@@ -351,15 +498,6 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
     </div>
   
   
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/VSCode/">#VSCode</a>
-      
-        <a href="/tags/%E8%BF%9C%E7%A8%8BSSH/">#远程SSH</a>
-      
-    </div>
-  
 </div>
 
 
@@ -368,8 +506,8 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>VSCode远程SSH连接</div>
-      <div>http://poetrilin.github.io/2023/01/24/Code/env/vscode远程连接服务器/</div>
+      <div>超参数调整(HP Tuning)与激活函数</div>
+      <div>http://poetrilin.github.io/2023/01/27/Code/DL/参数调整/</div>
     </div>
     <div class="license-meta">
       
@@ -408,18 +546,12 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/01/24/Code/DL/DL%E5%8E%9F%E7%90%86/" title="DL基本原理">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">DL基本原理</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/01/22/Code/CPP/lamba%E8%A1%A8%E8%BE%BE%E5%BC%8F/" title="lambda 表达式 in C++">
-                        <span class="hidden-mobile">lambda 表达式 in C++</span>
+                      <a href="/2023/01/27/Code/env/py_env/" title="Python虚拟环境--以tensorflow安装配置为例">
+                        <span class="hidden-mobile">Python虚拟环境--以tensorflow安装配置为例</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -476,6 +608,12 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
 
 
   
+
+
+  
+  
+
+
 
 
 
@@ -669,6 +807,49 @@ href="%5B(22条消息)%20windows%20ssh%20Permissions%20for%20“xxx“%20are%20t
 
 
   <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 
