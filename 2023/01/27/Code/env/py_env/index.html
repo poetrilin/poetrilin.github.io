@@ -16,19 +16,19 @@
   <meta name="author" content="Poetrilin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="python tensorflow虚拟环境 ---基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理，按需分配节省内存等等。 最近在学习DL时正好又要搭建一个tensorflow的环境，因此在此用这篇文章回顾自己基于conda包安装tensorflow环境的过程。 环境： - w">
+    <meta name="description" content="python tensorflow虚拟环境 ---基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理,并且营造纯净的环境避免冲突。 概念 (如果只是装环境 请跳过)  python 版本 Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python虚拟环境--以tensorflow安装配置为例">
 <meta property="og:url" content="http://poetrilin.github.io/2023/01/27/Code/env/py_env/index.html">
 <meta property="og:site_name" content="Poetrilin の Blogs">
-<meta property="og:description" content="python tensorflow虚拟环境 ---基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理，按需分配节省内存等等。 最近在学习DL时正好又要搭建一个tensorflow的环境，因此在此用这篇文章回顾自己基于conda包安装tensorflow环境的过程。 环境： - w">
+<meta property="og:description" content="python tensorflow虚拟环境 ---基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理,并且营造纯净的环境避免冲突。 概念 (如果只是装环境 请跳过)  python 版本 Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/config_chanel.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/tf_env.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/terminal.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/suceess.png">
 <meta property="article:published_time" content="2023-01-27T09:39:48.853Z">
-<meta property="article:modified_time" content="2023-01-27T13:01:37.724Z">
+<meta property="article:modified_time" content="2023-01-28T07:38:56.100Z">
 <meta property="article:author" content="Poetrilin">
 <meta property="article:tag" content="VSCode">
 <meta name="twitter:card" content="summary_large_image">
@@ -70,11 +70,15 @@
 
 
 
+  
+<link rel="stylesheet" href="/css/maccode.css">
+
+
 
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"poetrilin.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"poetrilin.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -237,7 +241,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.6k 字
+          3.7k 字
         
       </span>
     
@@ -286,7 +290,59 @@
 tensorflow虚拟环境 ---基于Anaconda</h1>
 <p><strong>date:</strong> 2023/01/27</p>
 <p>python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处:
-封闭性好易于管理，按需分配节省内存等等。</p>
+封闭性好易于管理,并且营造纯净的环境避免冲突。</p>
+<h2 id="概念">概念</h2>
+<p>(如果只是装环境 <a href="##-实践">请跳过</a>)</p>
+<ol type="1">
+<li><p>python 版本</p>
+<p>Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与
+Python2 兼容，导致一些软件库需要设配两种版本的
+Python，同时开发者可能需要在一个环境中，部署不同版本的
+Python，对开发和维护造成了麻烦。</p>
+<p>因此出现了版本管理器 Pyenv，类似于 nodejs 的
+nvm，可以创建出相互隔离的 Python 环境，并且可以方便的切换环境中的 Python
+版本，但和 Python 虚拟环境关系不大</p></li>
+<li><p>python 包库</p>
+<p>包库或者叫软件源是 Python
+第三方软件的库的集合，或者市场，可以发布、下载和管理软件包，其中 pypi
+是官方指定的软件包库，基于其上的 pip
+工具就是从这里查找、下载安装软件包的。为了提高下载速度，世界上有很多
+Pypi 的镜像服务器，在国内也有多个软件源.</p></li>
+<li><p>python 包管理器</p>
+<p>软件包源中的软件包数量巨大，版本多样，所以需要借助于软件源管理工具，例如
+pip、conda、Pipenv、Poetry 等</p>
+<ul>
+<li><p>pip 是最常用的包管理工具，通过
+<code>pip install &lt;packagename&gt;</code>命令格式来安装软件包，使用的是
+pypi 软件包源</p></li>
+<li><p>conda 多用作科学计算领域的包管理工具，功能丰富且强大.</p></li>
+<li><p>ipenv
+会自动帮你管理虚拟环境和依赖文件，并且提供了一系列命令和选项来帮助你实现各种依赖和环境管理相关的操作</p></li>
+<li><p>Poetry 和 Pipenv 类似，是一个 Python
+虚拟环境和依赖管理工具，另外它还提供了包管理功能，比如打包和发布。你可以把它看做是
+Pipenv 和 Flit 这些工具的超集。它可以让你用 Poetry 来同时管理 Python
+库和 Python 程序</p></li>
+</ul>
+<p>很多包管理工具不仅提供了基本的包管理功能，还提供了虚拟环境构建，程序管理的等功能</p></li>
+<li><p>Python 虚拟环境</p>
+<p>Python
+应用经常需要使用一些包第三方包或者模块，有时需要依赖<strong>特定的包</strong>或者库的<strong>版本</strong>，所以不能有一个能适应所有
+Python 应用的软件环境，解决这一问题的方法是 虚拟环境。</p>
+<p><strong>原理：</strong></p>
+<p><div class="note note-success">
+            <p>操作系统的环境变量可以为程序提供信息和做信息交换介质，进程可以共享操作系统中的环境变量，也可以为进程指定环境变量，其中PATH是很重要的环境变量，用于为操作系统和程序提供可执行文件的访问路径.</p>
+          </div></p>
+<p>Python
+虚拟环境就是利用这个特性构建的，在激活虚拟环境之时，激活脚本会将当前命令行程序的
+PATH 修改为虚拟环境的，这样执行命令就会在被修改的 PATH
+中查找，从而避免了原本 PATH 可以找到的命令，从而实现了 Python
+环境的隔离。</p></li>
+</ol>
+<h4 id="与开发工具配合">与开发工具配合</h4>
+<ul>
+<li><p>Visual Studio Code</p></li>
+<li><p>Pycharm ## 实践</p></li>
+</ul>
 <p>最近在学习DL时正好又要搭建一个tensorflow的环境，因此在此用这篇文章回顾自己基于conda包安装tensorflow环境的过程。</p>
 <p>环境： - windows 11 shell</p>
 <ul>
@@ -308,6 +364,7 @@ prompt3打开会是一个叫base的基环境，也就是最基本的环境,pytho
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda create -n 环境的名字 python=版本号</span><br>conda create -n tensorflow2 python=3.7<br></code></pre></td></tr></table></figure>
 <p>2.激活tensorflow环境</p>
 <p><code>activate tensorflow2</code></p>
+<p>注:退出虚拟环境<code>deactivate tensorflow2</code>即可。</p>
 <p>3.查看当前可以使用的tensorflow版本 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda search  --full -name tensorflow<span class="hljs-comment">#下面这条运行不了就运行这条，是版本问题</span></span><br>conda search  --full tensorflow<br></code></pre></td></tr></table></figure></p>
 <ol start="4" type="1">
 <li>查看tensorflow包信息及依赖关系</li>
@@ -542,7 +599,7 @@ src="/img/py_env/ero2.png" srcset="/img/loading.gif" lazyload /></p>
     <div class="footer-inner">
   
     <div class="footer-content">
-       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+       <div><span>Poetrilin Blogs|诗柒羽</span></div> <i class="iconfont icon-love"></i> 
     </div>
   
   
