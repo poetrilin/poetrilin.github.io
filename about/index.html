@@ -16,12 +16,12 @@
   <meta name="author" content="Poetrilin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="这里是\(Poetrilin\)的博客，用于分享和回顾日常学习的笔记.本人为USTC2021级本科就读。 \[个人资料暂时先咕。\]  联系方式 mail: 3193281992@qq.com">
+    <meta name="description" content="这里是PoetrilinPoetrilinPoetrilin的博客，用于分享和回顾日常学习的笔记.本人为USTC2021级本科就读。 个人资料暂时先咕。个人资料暂时先咕。 个人资料暂时先咕。  联系方式 mail: 3193281992@qq.com">
 <meta property="og:type" content="website">
 <meta property="og:title" content="关于">
 <meta property="og:url" content="http://poetrilin.github.io/about/index.html">
 <meta property="og:site_name" content="Poetrilin の Blogs">
-<meta property="og:description" content="这里是\(Poetrilin\)的博客，用于分享和回顾日常学习的笔记.本人为USTC2021级本科就读。 \[个人资料暂时先咕。\]  联系方式 mail: 3193281992@qq.com">
+<meta property="og:description" content="这里是PoetrilinPoetrilinPoetrilin的博客，用于分享和回顾日常学习的笔记.本人为USTC2021级本科就读。 个人资料暂时先咕。个人资料暂时先咕。 个人资料暂时先咕。  联系方式 mail: 3193281992@qq.com">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-01-24T05:22:05.000Z">
 <meta property="article:modified_time" content="2023-01-26T03:23:17.706Z">
@@ -41,6 +41,8 @@
   <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/KaTeX/0.16.2/katex.min.css" />
 
 
 
@@ -255,11 +257,12 @@
 
 <article class="about-content page-content mt-5">
   <div class="markdown-body">
-    <p>这里是<span
-class="math inline">\(Poetrilin\)</span>的博客，用于分享和回顾日常学习的笔记.本人为USTC2021级本科就读。
-<span class="math display">\[个人资料暂时先咕。\]</span></p>
-<ul>
-<li><strong>联系方式</strong> mail: 3193281992@qq.com</li>
+    <p>这里是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mi>o</mi><mi>e</mi><mi>t</mi><mi>r</mi><mi>i</mi><mi>l</mi><mi>i</mi><mi>n</mi></mrow><annotation encoding="application/x-tex">Poetrilin</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal">oe</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal">in</span></span></span></span>的博客，用于分享和回顾日常学习的笔记.本人为USTC2021级本科就读。</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>个人资料暂时先咕。</mtext></mrow><annotation encoding="application/x-tex">个人资料暂时先咕。
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord cjk_fallback">个人资料暂时先咕。</span></span></span></span></span></p>
+<ul class="lvl-0">
+<li class="lvl-2"><strong>联系方式</strong><br>
+mail: <a href="mailto:3193281992@qq.com">3193281992@qq.com</a></li>
 </ul>
 
   </div>
@@ -292,7 +295,6 @@ class="math inline">\(Poetrilin\)</span>的博客，用于分享和回顾日常�
 
   
   
-
 
 
 
@@ -450,49 +452,6 @@ class="math inline">\(Poetrilin\)</span>的博客，用于分享和回顾日常�
 
 
   <script>Fluid.plugins.imageCaption();</script>
-
-  
-      <script>
-        if (!window.MathJax) {
-          window.MathJax = {
-            tex    : {
-              inlineMath: { '[+]': [['$', '$']] }
-            },
-            loader : {
-              load: ['ui/lazy']
-            },
-            options: {
-              renderActions: {
-                insertedScript: [200, () => {
-                  document.querySelectorAll('mjx-container').forEach(node => {
-                    let target = node.parentNode;
-                    if (target.nodeName.toLowerCase() === 'li') {
-                      target.parentNode.classList.add('has-jax');
-                    }
-                  });
-                }, '', false]
-              }
-            }
-          };
-        } else {
-          MathJax.startup.document.state(0);
-          MathJax.texReset();
-          MathJax.typeset();
-          MathJax.typesetPromise();
-        }
-
-        Fluid.events.registerRefreshCallback(function() {
-          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
-            MathJax.startup.document.state(0);
-            MathJax.texReset();
-            MathJax.typeset();
-            MathJax.typesetPromise();
-          }
-        });
-      </script>
-    
-
-  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
 
   <script  src="/js/local-search.js" ></script>
 

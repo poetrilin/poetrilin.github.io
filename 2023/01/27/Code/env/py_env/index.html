@@ -16,19 +16,20 @@
   <meta name="author" content="Poetrilin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="python tensorflow虚拟环境 ---基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理,并且营造纯净的环境避免冲突。 概念 (如果只是装环境 请跳过)  python 版本 Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与">
+    <meta name="description" content="python tensorflow虚拟环境 —基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理,并且营造纯净的环境避免冲突。 概念 (如果只是装环境 请跳过)   python 版本 Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与 Python2 兼">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python虚拟环境--以tensorflow安装配置为例">
 <meta property="og:url" content="http://poetrilin.github.io/2023/01/27/Code/env/py_env/index.html">
 <meta property="og:site_name" content="Poetrilin の Blogs">
-<meta property="og:description" content="python tensorflow虚拟环境 ---基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理,并且营造纯净的环境避免冲突。 概念 (如果只是装环境 请跳过)  python 版本 Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与">
+<meta property="og:description" content="python tensorflow虚拟环境 —基于Anaconda date: 2023&#x2F;01&#x2F;27 python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理,并且营造纯净的环境避免冲突。 概念 (如果只是装环境 请跳过)   python 版本 Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与 Python2 兼">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/config_chanel.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/tf_env.png">
+<meta property="og:image" content="http://poetrilin.github.io/img/py_env/ero2.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/terminal.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/suceess.png">
 <meta property="article:published_time" content="2023-01-27T09:39:48.853Z">
-<meta property="article:modified_time" content="2023-01-28T07:38:56.100Z">
+<meta property="article:modified_time" content="2023-01-29T03:14:29.769Z">
 <meta property="article:author" content="Poetrilin">
 <meta property="article:tag" content="VSCode">
 <meta name="twitter:card" content="summary_large_image">
@@ -286,120 +287,127 @@
             
               <div class="markdown-body">
                 
-                <h1 id="python-tensorflow虚拟环境----基于anaconda">python
-tensorflow虚拟环境 ---基于Anaconda</h1>
+                <h1>python tensorflow虚拟环境 —基于Anaconda</h1>
 <p><strong>date:</strong> 2023/01/27</p>
-<p>python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处:
-封闭性好易于管理,并且营造纯净的环境避免冲突。</p>
+<p>python的虚拟环境向来困惑了很多新手(包括我),但实际上用过的人都很清楚其好处: 封闭性好易于管理,并且营造纯净的环境避免冲突。</p>
 <h2 id="概念">概念</h2>
-<p>(如果只是装环境 <a href="##-实践">请跳过</a>)</p>
-<ol type="1">
-<li><p>python 版本</p>
-<p>Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与
-Python2 兼容，导致一些软件库需要设配两种版本的
-Python，同时开发者可能需要在一个环境中，部署不同版本的
-Python，对开发和维护造成了麻烦。</p>
-<p>因此出现了版本管理器 Pyenv，类似于 nodejs 的
-nvm，可以创建出相互隔离的 Python 环境，并且可以方便的切换环境中的 Python
-版本，但和 Python 虚拟环境关系不大</p></li>
-<li><p>python 包库</p>
-<p>包库或者叫软件源是 Python
-第三方软件的库的集合，或者市场，可以发布、下载和管理软件包，其中 pypi
-是官方指定的软件包库，基于其上的 pip
-工具就是从这里查找、下载安装软件包的。为了提高下载速度，世界上有很多
-Pypi 的镜像服务器，在国内也有多个软件源.</p></li>
-<li><p>python 包管理器</p>
-<p>软件包源中的软件包数量巨大，版本多样，所以需要借助于软件源管理工具，例如
-pip、conda、Pipenv、Poetry 等</p>
-<ul>
-<li><p>pip 是最常用的包管理工具，通过
-<code>pip install &lt;packagename&gt;</code>命令格式来安装软件包，使用的是
-pypi 软件包源</p></li>
-<li><p>conda 多用作科学计算领域的包管理工具，功能丰富且强大.</p></li>
-<li><p>ipenv
-会自动帮你管理虚拟环境和依赖文件，并且提供了一系列命令和选项来帮助你实现各种依赖和环境管理相关的操作</p></li>
-<li><p>Poetry 和 Pipenv 类似，是一个 Python
-虚拟环境和依赖管理工具，另外它还提供了包管理功能，比如打包和发布。你可以把它看做是
-Pipenv 和 Flit 这些工具的超集。它可以让你用 Poetry 来同时管理 Python
-库和 Python 程序</p></li>
+<p>(如果只是装环境 <a href="##-%E5%AE%9E%E8%B7%B5">请跳过</a>)</p>
+<ol>
+<li class="lvl-3">
+<p>python 版本</p>
+<p>Python 版本指的是 Python 解析器本身的版本。由于 Python3 不能与 Python2 兼容，导致一些软件库需要设配两种版本的 Python，同时开发者可能需要在一个环境中，部署不同版本的 Python，对开发和维护造成了麻烦。</p>
+<p>因此出现了版本管理器 Pyenv，类似于 nodejs 的 nvm，可以创建出相互隔离的 Python 环境，并且可以方便的切换环境中的 Python 版本，但和 Python 虚拟环境关系不大</p>
+</li>
+<li class="lvl-3">
+<p>python 包库</p>
+<p>包库或者叫软件源是 Python 第三方软件的库的集合，或者市场，可以发布、下载和管理软件包，其中 pypi 是官方指定的软件包库，基于其上的 pip 工具就是从这里查找、下载安装软件包的。为了提高下载速度，世界上有很多 Pypi 的镜像服务器，在国内也有多个软件源.</p>
+</li>
+<li class="lvl-3">
+<p>python 包管理器</p>
+<p>软件包源中的软件包数量巨大，版本多样，所以需要借助于软件源管理工具，例如 pip、conda、Pipenv、Poetry 等</p>
+<ul class="lvl-2">
+<li class="lvl-6">
+<p>pip 是最常用的包管理工具，通过 <code>pip install &lt;packagename&gt; </code>命令格式来安装软件包，使用的是 pypi 软件包源</p>
+</li>
+<li class="lvl-6">
+<p>conda 多用作科学计算领域的包管理工具，功能丰富且强大.</p>
+</li>
+<li class="lvl-6">
+<p>ipenv 会自动帮你管理虚拟环境和依赖文件，并且提供了一系列命令和选项来帮助你实现各种依赖和环境管理相关的操作</p>
+</li>
+<li class="lvl-6">
+<p>Poetry 和 Pipenv 类似，是一个 Python 虚拟环境和依赖管理工具，另外它还提供了包管理功能，比如打包和发布。你可以把它看做是 Pipenv 和 Flit 这些工具的超集。它可以让你用 Poetry 来同时管理 Python 库和 Python 程序</p>
+</li>
 </ul>
-<p>很多包管理工具不仅提供了基本的包管理功能，还提供了虚拟环境构建，程序管理的等功能</p></li>
-<li><p>Python 虚拟环境</p>
-<p>Python
-应用经常需要使用一些包第三方包或者模块，有时需要依赖<strong>特定的包</strong>或者库的<strong>版本</strong>，所以不能有一个能适应所有
-Python 应用的软件环境，解决这一问题的方法是 虚拟环境。</p>
+<p>很多包管理工具不仅提供了基本的包管理功能，还提供了虚拟环境构建，程序管理的等功能</p>
+</li>
+<li class="lvl-3">
+<p>Python 虚拟环境</p>
+<p>Python 应用经常需要使用一些包第三方包或者模块，有时需要依赖<strong>特定的包</strong>或者库的<strong>版本</strong>，所以不能有一个能适应所有 Python 应用的软件环境，解决这一问题的方法是 虚拟环境。</p>
 <p><strong>原理：</strong></p>
-<p><div class="note note-success">
-            <p>操作系统的环境变量可以为程序提供信息和做信息交换介质，进程可以共享操作系统中的环境变量，也可以为进程指定环境变量，其中PATH是很重要的环境变量，用于为操作系统和程序提供可执行文件的访问路径.</p>
-          </div></p>
-<p>Python
-虚拟环境就是利用这个特性构建的，在激活虚拟环境之时，激活脚本会将当前命令行程序的
-PATH 修改为虚拟环境的，这样执行命令就会在被修改的 PATH
-中查找，从而避免了原本 PATH 可以找到的命令，从而实现了 Python
-环境的隔离。</p></li>
+ <div class="note note-success">
+            <p>操作系统的环境变量可以为程序提供信息和做信息交换介质，进程可以共享操作系统中的环境变量，也可以为进程指定环境变量，其中 PATH 是很重要的环境变量，用于为操作系统和程序提供可执行文件的访问路径.</p>
+          </div>
+<p>Python 虚拟环境就是利用这个特性构建的，在激活虚拟环境之时，激活脚本会将当前命令行程序的 PATH 修改为虚拟环境的，这样执行命令就会在被修改的 PATH 中查找，从而避免了原本 PATH 可以找到的命令，从而实现了 Python 环境的隔离。</p>
+</li>
 </ol>
 <h4 id="与开发工具配合">与开发工具配合</h4>
-<ul>
-<li><p>Visual Studio Code</p></li>
-<li><p>Pycharm ## 实践</p></li>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Visual Studio Code</p>
+</li>
+<li class="lvl-2">
+<p>Pycharm</p>
+</li>
 </ul>
+<h2 id="实践">实践</h2>
 <p>最近在学习DL时正好又要搭建一个tensorflow的环境，因此在此用这篇文章回顾自己基于conda包安装tensorflow环境的过程。</p>
-<p>环境： - windows 11 shell</p>
-<ul>
-<li>anaconda prompt3(默认已安装好anaconda并添加入env-path)</li>
+<p>环境：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>windows 11 shell</p>
+</li>
+<li class="lvl-3">
+<p>anaconda prompt3(默认已安装好anaconda并添加入env-path)</p>
+</li>
 </ul>
 <blockquote>
-<p>题外话 : chanel 记得换镜像源</p>
+<p>题外话 :   chanel 记得换镜像源</p>
 </blockquote>
-<p>在shell中操作如下: <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">查看源</span><br>conda config --show-sources<br><span class="hljs-meta prompt_"># </span><span class="language-bash">建议使用科大源.下面图片是清华源的例子，因为清华源貌似也挺慢的所以换科大源了</span><br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/msys2/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/bioconda/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/menpo/<br>conda config --set show_channel_urls yes<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">设置搜索时显示通道地址</span><br>conda config --set show_channel_urls yes<br></code></pre></td></tr></table></figure></p>
-<p>命令执行完后，会生成~/.condarc(Linux/Mac)或C:_NAME.condarc文件,这便是配置文件，执行后应该长这样(像上面的改配置也可以直接修改这个文件):</p>
-<p><img src="/img/py_env/config_chanel.png" srcset="/img/loading.gif" lazyload />
+<p>在shell中操作如下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">查看源</span><br>conda config --show-sources<br><span class="hljs-meta prompt_"># </span><span class="language-bash">建议使用科大源.下面图片是清华源的例子，因为清华源貌似也挺慢的所以换科大源了</span><br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/msys2/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/bioconda/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/menpo/<br>conda config --set show_channel_urls yes<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">设置搜索时显示通道地址</span><br>conda config --set show_channel_urls yes<br></code></pre></td></tr></table></figure>
+<p>命令执行完后，会生成~/.condarc(Linux/Mac)或C:\Users\USER_NAME.condarc文件,这便是配置文件，执行后应该长这样(像上面的改配置也可以直接修改这个文件):</p>
+<p><img src="/img/py_env/config_chanel.png" srcset="/img/loading.gif" lazyload alt=""><br>
 要把default删除或者移到第一个，因为pip是按这个列表从下往上依次执行,没找到相应的文件则从上一个找.</p>
-<h2
-id="以创建tensorflow的安装与卸载环境为例">以创建tensorflow的安装与卸载环境为例</h2>
-<p>anaconda
-prompt3打开会是一个叫base的基环境，也就是最基本的环境,python支持你自行创建多个虚拟环境以应对不同的开发,这里是以安装一个tensorflow的环境为例.</p>
-<p>1.创建一个tensorflow环境
-创建一个环境用于安装tensorflow，环境名可以自己命名，选择python的版本。</p>
+<h2 id="以创建tensorflow的安装与卸载环境为例">以创建tensorflow的安装与卸载环境为例</h2>
+<p>anaconda prompt3打开会是一个叫base的基环境，也就是最基本的环境,python支持你自行创建多个虚拟环境以应对不同的开发,这里是以安装一个tensorflow的环境为例.</p>
+<p>1.创建一个tensorflow环境创建一个环境用于安装tensorflow，环境名可以自己命名，选择python的版本。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda create -n 环境的名字 python=版本号</span><br>conda create -n tensorflow2 python=3.7<br></code></pre></td></tr></table></figure>
 <p>2.激活tensorflow环境</p>
 <p><code>activate tensorflow2</code></p>
 <p>注:退出虚拟环境<code>deactivate tensorflow2</code>即可。</p>
-<p>3.查看当前可以使用的tensorflow版本 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda search  --full -name tensorflow<span class="hljs-comment">#下面这条运行不了就运行这条，是版本问题</span></span><br>conda search  --full tensorflow<br></code></pre></td></tr></table></figure></p>
-<ol start="4" type="1">
-<li>查看tensorflow包信息及依赖关系</li>
+<p>3.查看当前可以使用的tensorflow版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda search  --full -name tensorflow<span class="hljs-comment">#下面这条运行不了就运行这条，是版本问题</span></span><br>conda search  --full tensorflow<br></code></pre></td></tr></table></figure>
+<ol start="4">
+<li class="lvl-3">
+<p>查看tensorflow包信息及依赖关系</p>
+</li>
 </ol>
 <p><code>conda  info  tensorflow</code></p>
-<ol start="5" type="1">
-<li><p>安装tensorflow</p>
-<p>在自己创建的环境下安装tensorflow</p></li>
+<ol start="5">
+<li class="lvl-3">
+<p>安装tensorflow</p>
+<p>在自己创建的环境下安装tensorflow</p>
+</li>
 </ol>
-<p><code>pip install tensorflow</code>或
-<code>pip install --upgrade --ignore-installed      tensorflow</code>
-如果速度很慢就换用科大源(亲测源很快，妮可还是妮可) <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pip install tensorflow-cpu==2.2.0 -i  https://pypi.mirrors.ustc.edu.cn/simple  <br></code></pre></td></tr></table></figure></p>
-<p>安装完之后 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">activate tensorflow2<br><span class="hljs-meta prompt_">#</span><span class="language-bash">...</span><br><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; import tensorflow as tf</span><br></code></pre></td></tr></table></figure></p>
-<p>---没报错请跳过这段--- <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">TypeError: Descriptors cannot not be created directly.<br>If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc &gt;= 3.19.0.<br>If you cannot immediately regenerate your protos, some other possible workarounds are:<br> 1. Downgrade the protobuf package to 3.20.x or lower.<br> 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).<br></code></pre></td></tr></table></figure> 是这个protobuf包等级太高了,于是
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-comment"># 卸载当前版本（我的是3.9.2）</span><br><span class="hljs-attribute">pip</span> uninstall protobuf<br><span class="hljs-comment"># 安装低版本</span><br><span class="hljs-attribute">pip</span> install protobuf==<span class="hljs-number">3</span>.<span class="hljs-number">20</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure> 然后就行了.</p>
-<hr />
-<p>如图所示则已安装成功.bless you! <img src="/img/py_env/tf_env.png" srcset="/img/loading.gif" lazyload />
+<p><code>pip install tensorflow</code>或<code>pip install --upgrade --ignore-installed      tensorflow</code><br>
+如果速度很慢就换用科大源(亲测源很快，妮可还是妮可)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pip install tensorflow-cpu==2.2.0 -i  https://pypi.mirrors.ustc.edu.cn/simple  <br></code></pre></td></tr></table></figure>
+<p>安装完之后</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">activate tensorflow2<br><span class="hljs-meta prompt_">#</span><span class="language-bash">...</span><br><span class="hljs-meta prompt_">&gt;</span><span class="language-bash">&gt;&gt; import tensorflow as tf</span><br></code></pre></td></tr></table></figure>
+<p>—没报错请跳过这段—</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">TypeError: Descriptors cannot not be created directly.<br>If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc &gt;= 3.19.0.<br>If you cannot immediately regenerate your protos, some other possible workarounds are:<br> 1. Downgrade the protobuf package to 3.20.x or lower.<br> 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).<br></code></pre></td></tr></table></figure>
+<p>是这个protobuf包等级太高了,于是</p>
+ <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-comment"># 卸载当前版本（我的是3.9.2）</span><br><span class="hljs-attribute">pip</span> uninstall protobuf<br><span class="hljs-comment"># 安装低版本</span><br><span class="hljs-attribute">pip</span> install protobuf==<span class="hljs-number">3</span>.<span class="hljs-number">20</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+<p>然后就行了.</p>
+<hr>
+<p>如图所示则已安装成功.bless you!<br>
+<img src="/img/py_env/tf_env.png" srcset="/img/loading.gif" lazyload alt=""><br>
 然后exit()或者Ctrl+z退出.</p>
 <blockquote>
-<p>注意: 这个虚拟环境在C:\Users\anaconda3\envs目录下</p>
+<p>注意: 这个虚拟环境在C:\Users\username\anaconda3\envs目录下</p>
 </blockquote>
-<h3
-id="下面看看在vscode上的jupyter-notebook运行.">下面看看在<strong>VSCode</strong>上的jupyter
-notebook运行.</h3>
-<p>VSCode貌似没有自动找到我的解释器路径,于是ctrl
-+shift+p设置里输入<code>select python interpreter</code>,手动找到你的环境下的python比如：
+<h3 id="下面看看在VSCode上的jupyter-notebook运行">下面看看在<strong>VSCode</strong>上的jupyter notebook运行.</h3>
+<p>VSCode貌似没有自动找到我的解释器路径,于是ctrl +shift+p设置里输入<code>select python interpreter</code>,手动找到你的环境下的python比如：<br>
 <code>C:\Users\username\anaconda3\envs\tensorflow2\python.exe</code></p>
 <p>然后重启vscode或者设置里面输入<code>reload window</code></p>
-<p>现在可以修改jupyter book的kernel了!然鹅运行还不行 <img
-src="/img/py_env/ero2.png" srcset="/img/loading.gif" lazyload /></p>
+<p>现在可以修改jupyter book的kernel了!然鹅运行还不行<br>
+<img src="/img/py_env/ero2.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>按他说的做.打开终端运行</p>
 <p><code>conda install -n base_tf ipykernel --update-deps --force-reinstall</code></p>
-<p><img src="/img/py_env/terminal.png" srcset="/img/loading.gif" lazyload /></p>
+<p><img src="/img/py_env/terminal.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>然后一路yes,就能正常运行了</p>
-<p><img src="/img/py_env/suceess.png" srcset="/img/loading.gif" lazyload /></p>
+<p><img src="/img/py_env/suceess.png" srcset="/img/loading.gif" lazyload alt=""></p>
 
                 
               </div>
