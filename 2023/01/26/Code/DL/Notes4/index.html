@@ -19,19 +19,19 @@
     <meta name="description" content="Basic recipe for ML&#x2F;DL(C2.U1) Concept  data set   training set 训练集 Dev(elop) set Test set  测试集   欠拟合和过拟合    欠拟合 right over过拟合     error大,i.e Bias  方差varience大         From Bias to Varience  Bias----&amp;g">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Some tricks in DL">
-<meta property="og:url" content="http://poetrilin.github.io/2023/01/26/Code/DL/Notes4/index.html">
+<meta property="og:url" content="http://www.poetrilin.com/2023/01/26/Code/DL/Notes4/index.html">
 <meta property="og:site_name" content="Poetrilin の Blogs">
 <meta property="og:description" content="Basic recipe for ML&#x2F;DL(C2.U1) Concept  data set   training set 训练集 Dev(elop) set Test set  测试集   欠拟合和过拟合    欠拟合 right over过拟合     error大,i.e Bias  方差varience大         From Bias to Varience  Bias----&amp;g">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/bias_varience.png">
-<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/normalization.png">
+<meta property="og:image" content="http://www.poetrilin.com/img/imgDL/bias_varience.png">
+<meta property="og:image" content="http://www.poetrilin.com/img/imgDL/normalization.png">
 <meta property="article:published_time" content="2023-01-26T03:28:11.583Z">
 <meta property="article:modified_time" content="2023-01-26T16:02:51.743Z">
 <meta property="article:author" content="Poetrilin">
 <meta property="article:tag" content="DL">
 <meta property="article:tag" content="正则化">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://poetrilin.github.io/img/imgDL/bias_varience.png">
+<meta name="twitter:image" content="http://www.poetrilin.com/img/imgDL/bias_varience.png">
   
   
   
@@ -79,7 +79,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"poetrilin.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"www.poetrilin.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -283,6 +283,14 @@
           <article class="post-content mx-auto">
             <!-- SEO header -->
             <h1 style="display: none">Some tricks in DL</h1>
+            
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2023年1月27日 凌晨
+                  
+                
+              </p>
             
             
               <div class="markdown-body">
@@ -511,49 +519,6 @@ Here are the results of our three models:</p>
 
 
               
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>Some tricks in DL</div>
-      <div>http://poetrilin.github.io/2023/01/26/Code/DL/Notes4/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>Poetrilin</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>更新于</div>
-          <div>2023年1月27日</div>
-        </div>
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
 
               
                 <div class="post-prevnext my-3">

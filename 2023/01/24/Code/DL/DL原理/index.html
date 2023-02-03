@@ -19,19 +19,19 @@
     <meta name="description" content="本文将基于吴恩达(Andrew)的网课第一部分内容对深度学习(deep learning)基础原理进行阐述. Network Therom 向前传播forward propogation 这次笔记主要是对向前传播的过程以及数学公式进行梳理和整合 1. 单个神经元  x,w 是列向量(x1×3)(x_{1\times 3})(x1×3​),σ\sigmaσ 是激活函数，作用是使之非线性化，具体在另一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DL基本原理">
-<meta property="og:url" content="http://poetrilin.github.io/2023/01/24/Code/DL/DL%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:url" content="http://www.poetrilin.com/2023/01/24/Code/DL/DL%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="Poetrilin の Blogs">
 <meta property="og:description" content="本文将基于吴恩达(Andrew)的网课第一部分内容对深度学习(deep learning)基础原理进行阐述. Network Therom 向前传播forward propogation 这次笔记主要是对向前传播的过程以及数学公式进行梳理和整合 1. 单个神经元  x,w 是列向量(x1×3)(x_{1\times 3})(x1×3​),σ\sigmaσ 是激活函数，作用是使之非线性化，具体在另一">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/neuron_cell.png">
-<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/layer1.png">
-<meta property="og:image" content="http://poetrilin.github.io/img/imgDL/nueron_net.png">
+<meta property="og:image" content="http://www.poetrilin.com/img/imgDL/neuron_cell.png">
+<meta property="og:image" content="http://www.poetrilin.com/img/imgDL/layer1.png">
+<meta property="og:image" content="http://www.poetrilin.com/img/imgDL/nueron_net.png">
 <meta property="article:published_time" content="2023-01-24T05:50:34.534Z">
 <meta property="article:modified_time" content="2023-01-29T06:18:00.975Z">
 <meta property="article:author" content="Poetrilin">
 <meta property="article:tag" content="DL">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://poetrilin.github.io/img/imgDL/neuron_cell.png">
+<meta name="twitter:image" content="http://www.poetrilin.com/img/imgDL/neuron_cell.png">
   
   
   
@@ -79,7 +79,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"poetrilin.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"www.poetrilin.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -284,6 +284,14 @@
             <!-- SEO header -->
             <h1 style="display: none">DL基本原理</h1>
             
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2023年1月29日 下午
+                  
+                
+              </p>
+            
             
               <div class="markdown-body">
                 
@@ -372,49 +380,6 @@ x,w 是列向量<span class="katex"><span class="katex-mathml"><math xmlns="http
 
 
               
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>DL基本原理</div>
-      <div>http://poetrilin.github.io/2023/01/24/Code/DL/DL原理/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>Poetrilin</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>更新于</div>
-          <div>2023年1月29日</div>
-        </div>
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
 
               
                 <div class="post-prevnext my-3">

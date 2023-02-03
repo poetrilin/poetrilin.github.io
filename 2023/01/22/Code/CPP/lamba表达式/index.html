@@ -19,7 +19,7 @@
     <meta name="description" content="version: C++11引入 优点：   声明式编程风格：就地匿名定义目标函数或函数对象，不需要额外写一个命名函数或者函数对象。(函数式编程的特点)   简洁且方便与上下文联系，有好的可读性和可维护性。   在需要的时间和地点实现功能闭包，使程序更灵活   lambda 表达式的概念和基本用法 lambda 表达式的语法形式可简单归纳如下： 1[ capture ] ( params ) op">
 <meta property="og:type" content="article">
 <meta property="og:title" content="lambda 表达式 in C++">
-<meta property="og:url" content="http://poetrilin.github.io/2023/01/22/Code/CPP/lamba%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:url" content="http://www.poetrilin.com/2023/01/22/Code/CPP/lamba%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
 <meta property="og:site_name" content="Poetrilin の Blogs">
 <meta property="og:description" content="version: C++11引入 优点：   声明式编程风格：就地匿名定义目标函数或函数对象，不需要额外写一个命名函数或者函数对象。(函数式编程的特点)   简洁且方便与上下文联系，有好的可读性和可维护性。   在需要的时间和地点实现功能闭包，使程序更灵活   lambda 表达式的概念和基本用法 lambda 表达式的语法形式可简单归纳如下： 1[ capture ] ( params ) op">
 <meta property="og:locale" content="zh_CN">
@@ -73,7 +73,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"poetrilin.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"www.poetrilin.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -278,6 +278,14 @@
             <!-- SEO header -->
             <h1 style="display: none">lambda 表达式 in C++</h1>
             
+              <p class="note note-info">
+                
+                  
+                    本文最后更新于：2023年1月22日 下午
+                  
+                
+              </p>
+            
             
               <div class="markdown-body">
                 
@@ -388,49 +396,6 @@
 
 
               
-  
-
-  <div class="license-box my-3">
-    <div class="license-title">
-      <div>lambda 表达式 in C++</div>
-      <div>http://poetrilin.github.io/2023/01/22/Code/CPP/lamba表达式/</div>
-    </div>
-    <div class="license-meta">
-      
-        <div class="license-meta-item">
-          <div>作者</div>
-          <div>Poetrilin</div>
-        </div>
-      
-      
-      
-        <div class="license-meta-item license-meta-date">
-          <div>更新于</div>
-          <div>2023年1月22日</div>
-        </div>
-      
-      
-        <div class="license-meta-item">
-          <div>许可协议</div>
-          <div>
-            
-              
-              
-                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
-                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
-                    <i class="iconfont icon-by"></i>
-                  </span>
-                </a>
-              
-            
-          </div>
-        </div>
-      
-    </div>
-    <div class="license-icon iconfont"></div>
-  </div>
-
-
 
               
                 <div class="post-prevnext my-3">
