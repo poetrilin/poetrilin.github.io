@@ -29,9 +29,9 @@
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/terminal.png">
 <meta property="og:image" content="http://poetrilin.github.io/img/py_env/suceess.png">
 <meta property="article:published_time" content="2023-01-27T09:39:48.853Z">
-<meta property="article:modified_time" content="2023-02-02T17:02:05.115Z">
+<meta property="article:modified_time" content="2023-02-03T06:21:35.997Z">
 <meta property="article:author" content="Poetrilin">
-<meta property="article:tag" content="VSCode">
+<meta property="article:tag" content="py虚拟环境">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://poetrilin.github.io/img/py_env/config_chanel.png">
   
@@ -242,7 +242,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.9k 字
+          7k 字
         
       </span>
     
@@ -340,6 +340,61 @@
 <p>Pycharm</p>
 </li>
 </ul>
+<h4 id="为什么要用虚拟环境">为什么要用虚拟环境</h4>
+<p>在实际项目开发中，我们通常会根据自己的需求去下载各种相应的框架库，但是可能每个项目使用的框架库并不一样，或使用框架的版本不一样，这样需要我们根据需求不断的更新或卸载相应的库。直接怼我们的Python环境操作会让我们的开发环境和项目造成很多不必要的麻烦，管理也相当混乱。如一下场景：</p>
+<p>场景1：项目A需要某个框架1.0版本，项目B需要这个库的2.0版本。如果没有安装虚拟环境，那么当你使用这两个项目时，你就需要 来回 的卸载安装了，这样很容易就给你的项目带来莫名的错误；</p>
+<p>场景2：公司之前的项目需要python2.7环境下运行，而你接手的项目需要在python3环境中运行，想想就应该知道，如果不使用虚拟环境，这这两个项目可能无法同时使用，使用python3则公司之前的项目可能无法运行，反正则新项目运行有麻烦。而如果虚拟环境可以分别为这两个项目配置不同的运行环境，这样两个项目就可以同时运行。</p>
+<h2 id="Anaconda创建、激活、退出、删除虚拟环境">Anaconda创建、激活、退出、删除虚拟环境</h2>
+<p>在Anaconda中conda可以理解为一个工具，也是一个可执行命令，其核心功能是包管理与环境管理。所以对虚拟环境进行创建、删除等操作需要使用conda命令。</p>
+<h4 id="创建虚拟环境">创建虚拟环境</h4>
+<p>使用 conda create -n your_env_name python=X.X（2.7、3.6等），anaconda 命令创建python版本为X.X、名字为your_env_name的虚拟环境。your_env_name文件可以在Anaconda安装目录envs文件下找到。 指定python版本为2.7，注意至少需要指定python版本或者要安装的包， 在不指定python版本时，自动安装最新python版本。</p>
+<p><code>conda create -n env_name python=2.7</code>, 同时安装必要的包可以用<br>
+<code>conda create -n env_name numpy matplotlib python=2.7</code></p>
+<h4 id="激活虚拟环境">激活虚拟环境</h4>
+<p>使用如下命令即可激活创建的虚拟环境</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">Linux:  source activate your_env_name<br><br>Windows: activate your_env_name<br></code></pre></td></tr></table></figure>
+<p>此时使用<code>python --version</code>可以检查当前python版本是否为想要的（即虚拟环境的python版本）。</p>
+<h4 id="退出虚拟环境">退出虚拟环境</h4>
+<p>使用如下命令即可退出创建的虚拟环境</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">Linux:  source deactivate your_env_name<br><br>Windows:deactivate env_name，也可以使用`activate root`切回root环境<br></code></pre></td></tr></table></figure>
+<h4 id="删除虚拟环境">删除虚拟环境</h4>
+<p>使用命令<code>conda remove -n your_env_name --all</code>， 即可删除。</p>
+<p>删除虚拟环境中的包：</p>
+<p>使用命令<code>conda remove --name $your_env_name  $package_name</code> 即可。</p>
+<h4 id="分享环境">分享环境</h4>
+<p>如果你想把你当前的环境配置与别人分享，这样ta可以快速建立一个与你一模一样的环境（同一个版本的python及各种包）来共同开发/进行新的实验。一个分享环境的快速方法就是给ta一个你的环境的.yml文件。首先通过activate target_env要分享的环境target_env，然后输入下面的命令</p>
+<p><code>conda env export &gt; environment.yml</code></p>
+<p>会在当前工作目录下生成一个environment.yml文件，小伙伴拿到environment.yml文件后，将该文件放在工作目录下，可以通过以下命令</p>
+<p><code>conda env create -f environment.yml</code></p>
+<p>从该文件创建环境，.yml</p>
+<p>conda常用命令</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>conda list：查看安装了哪些包。</p>
+</li>
+<li class="lvl-2">
+<p>conda install package_name(包名)：安装包</p>
+</li>
+</ul>
+<p>比如：</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>conda install --channel <a target="_blank" rel="noopener" href="https://conda.anaconda.org/menpo">https://conda.anaconda.org/menpo</a> opencv3 ：安装opencv</p>
+</li>
+<li class="lvl-2">
+<p>conda install scikit-learn:安装sklearn</p>
+</li>
+<li class="lvl-2">
+<p>conda install tensorflow-gpu:安装GPU版本的tensorflow</p>
+</li>
+<li class="lvl-2">
+<p>conda install keras:安装keras</p>
+</li>
+<li class="lvl-2">
+<p>conda env list 或 conda info -e：查看当前存在哪些虚拟环境</p>
+</li>
+</ul>
+<p>conda update conda：检查更新当前conda</p>
 <h2 id="实践">实践</h2>
 <p>如果你的解释器是anaconda,那么大部分科学计算包(比如PIL,numpy)你往往不需要额外安装,但是深度学习中常用的两个框架(Tensorflow和Pytorch，都有稳定的社区和公司支持)，因此在此用这篇文章回顾自己基于conda包安装tensorflow和Pytorch环境的过程。</p>
 <p>环境：</p>
@@ -357,12 +412,13 @@
 <blockquote>
 <p>题外话 :   chanel 记得换镜像源</p>
 </blockquote>
+<hr>
 <p>在shell中操作如下:</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">查看源</span><br>conda config --show-sources<br><span class="hljs-meta prompt_"># </span><span class="language-bash">建议使用科大源.下面图片是清华源的例子，因为清华源貌似也挺慢的所以换科大源了</span><br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/main/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/conda-forge/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/msys2/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/bioconda/<br>conda config --add channels https://mirrors.ustc.edu.cn/anaconda/cloud/menpo/<br>conda config --set show_channel_urls yes<br><span class="hljs-meta prompt_"></span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">设置搜索时显示通道地址</span><br>conda config --set show_channel_urls yes<br></code></pre></td></tr></table></figure>
 <p>命令执行完后，会生成~/.condarc(Linux/Mac)或C:\Users\USER_NAME.condarc文件,这便是配置文件，执行后应该长这样(像上面的改配置也可以直接修改这个文件):</p>
 <p><img src="/img/py_env/config_chanel.png" srcset="/img/loading.gif" lazyload alt=""><br>
 要把default删除或者移到第一个，因为pip是按这个列表从下往上依次执行,没找到相应的文件则从上一个找.</p>
-<h2 id="以创建tensorflow的安装与卸载环境为例">以创建tensorflow的安装与卸载环境为例</h2>
+<h3 id="以创建tensorflow的安装与卸载环境为例">以创建tensorflow的安装与卸载环境为例</h3>
 <p>anaconda prompt3打开会是一个叫base的基环境，也就是最基本的环境,python支持你自行创建多个虚拟环境以应对不同的开发,这里是以安装一个tensorflow的环境为例.</p>
 <p>1.创建一个tensorflow环境创建一个环境用于安装tensorflow，环境名可以自己命名，选择python的版本。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_">#</span><span class="language-bash">conda create -n 环境的名字 python=版本号</span><br>conda create -n tensorflow2 python=3.7<br></code></pre></td></tr></table></figure>
@@ -391,7 +447,7 @@
 <p>—没报错请跳过这段—</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">TypeError: Descriptors cannot not be created directly.<br>If this call came from a _pb2.py file, your generated code is out of date and must be regenerated with protoc &gt;= 3.19.0.<br>If you cannot immediately regenerate your protos, some other possible workarounds are:<br> 1. Downgrade the protobuf package to 3.20.x or lower.<br> 2. Set PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python (but this will use pure-Python parsing and will be much slower).<br></code></pre></td></tr></table></figure>
 <p>是这个protobuf包等级太高了,于是</p>
- <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-comment"># 卸载当前版本（我的是3.9.2）</span><br><span class="hljs-attribute">pip</span> uninstall protobuf<br><span class="hljs-comment"># 安装低版本</span><br><span class="hljs-attribute">pip</span> install protobuf==<span class="hljs-number">3</span>.<span class="hljs-number">20</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+ <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"> <span class="hljs-comment"># 卸载当前版本（我的是3.9.2）</span><br><span class="hljs-attribute">pip</span> uninstall protobuf<br> <span class="hljs-comment"># 安装低版本</span><br><span class="hljs-attribute">pip</span> install protobuf==<span class="hljs-number">3</span>.<span class="hljs-number">20</span>.<span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
 <p>然后就行了.</p>
 <hr>
 <p>如图所示则已安装成功.bless you!<br>
@@ -416,9 +472,39 @@
             <p>在选择不同CUDA版本时，PyTorch版本号尾部会出现cuxxx的字样，也就是说，PyTorch在安装时会自动安装所需的CUDA运行库，用户只需要保持PyTorch版本（包含其内部的CUDA版本）、Nvidia驱动版本和GPU型号相匹配,不需要自己额外装cuda,nvcc。</p>
           </div>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">\#创建新环境<br>conda create --name pytorch-gpu python=3.7<br>\#激活环境<br>activate pytorch-gpu<br>\#安装pytorch<br></code></pre></td></tr></table></figure>
-<p><a target="_blank" rel="noopener" href="https://pytorch.org/">官方</a>给的是<code>conda install pytorch torchvision torchaudio pytorch-cuda=11.6  -c pytorch -c nvidia</code>但是速度堪忧，连的外网，由于我们配了镜像源，把它命令中的-c参数去掉，但还是报错，说在镜像网站没有这些包,查询后知道应该运行:<br>
-<code>conda install pytorch torchvision cudatoolkit=11.3</code><br>
-这样就装成功了(但貌似也要一会)，可以在虚拟环境里试试</p>
+<p><a target="_blank" rel="noopener" href="https://pytorch.org/">官方</a>给的是<code>conda install pytorch torchvision torchaudio pytorch-cuda=11.6  -c pytorch -c nvidia</code> 如果能下载成功,congratulations!</p>
+<p>但是本机安装速度堪忧，因为torch安装连的是外网，由于我们配了镜像源，把它命令中的-c参数去掉，但还是报错，说在镜像网站没有这些包,查询后知道应该运行:<br>
+<code>conda install pytorch torchvision cudatoolkit=10.3</code><br>
+这样应该就装成功了(但貌似也要一会)，可以在虚拟环境里试试</p>
+<p>然而在用Pytorch的过程中，很意外地碰到了一个错误提示<code>AssertionError: Torch not compiled with CUDA enabled</code>,问题出现在Pytorch和CUDA版本不兼容的问题上。问题的发现可以在终端中输入’python’命令，运行python后，输入</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-built_in">print</span>(torch.__version__)<br><span class="hljs-built_in">print</span>(torch.cuda.is_available())<br></code></pre></td></tr></table></figure>
+<p>如果输出的结果是False，那么说明当前的Pytorch版本与cuda不匹配。原来是科大源没有pytorch1.7版本(只有1.2.1)😢<br>
+所以如果对新版本有要求还是按照官网来吧。</p>
+<p>下面安装这样一个环境:</p>
+<ul class="lvl-0">
+<li class="lvl-2">
+<p>Python  3.8</p>
+</li>
+<li class="lvl-2">
+<p>PyTorch  1.13.0 with CUDA support=11.7(有蛮大,)</p>
+</li>
+<li class="lvl-2">
+<p>SciPY  1.6.0</p>
+</li>
+<li class="lvl-2">
+<p>wxPython  4.1.1</p>
+</li>
+<li class="lvl-2">
+<p>Matplotlib  3.3.4</p>
+</li>
+<li class="lvl-2">
+<p>Jupyter Notebook  6.2.0</p>
+</li>
+<li class="lvl-2">
+<p>IPyWidgets  7.6.3</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">conda create -n pytorch1.7 python=3.8<br>conda activate pytorch1.7<br>conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia<br>conda install scipy<br>conda install wxPython<br>conda install matplotlib<br>conda install -c conda-forge notebook<br>conda install -c conda-forge ipywidgets<br>jupyter nbextension enable --py widgetsnbextension<br></code></pre></td></tr></table></figure>
 <h3 id="关于Pycharm使用">关于Pycharm使用</h3>
 <p>Pycharm 内置支持三种基本py环境</p>
 <ul class="lvl-0">
@@ -433,67 +519,8 @@
 </li>
 </ul>
 <blockquote>
-<p>(手建议选择第一个Virtualenv,因为Virtualenv使用后你新建虚拟环境是在你的项目文件夹下面的,这里我还是选的conda，因为Pytorch的包平时用的还蛮多的.</p>
+<p>(新手建议选择第一个Virtualenv,因为Virtualenv使用后你新建虚拟环境是在你的项目文件夹下面的,这里我还是选的conda，因为Pytorch的包平时用的还蛮多的.</p>
 </blockquote>
-<p>附:Conda prompt常用命令</p>
-<table>
-<thead>
-<tr>
-<th>功能</th>
-<th>命令</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>创建虚拟环境</td>
-<td>conda create -n 环境名称 python=3.6（python版本为3.6）</td>
-</tr>
-<tr>
-<td>删除虚拟环境</td>
-<td>conda remove -n 环境名称 --all</td>
-</tr>
-<tr>
-<td>激活虚拟环境</td>
-<td>conda activate 环境名称</td>
-</tr>
-<tr>
-<td>关闭虚拟环境</td>
-<td>conda deactivate</td>
-</tr>
-<tr>
-<td>查看已安装的库</td>
-<td>conda list</td>
-</tr>
-<tr>
-<td>列出当前已有环境</td>
-<td>conda env list</td>
-</tr>
-<tr>
-<td>删除环境中某个库</td>
-<td>conda remove 包名称（已进入虚拟环境内）</td>
-</tr>
-<tr>
-<td>查看已存在虚拟环境</td>
-<td>conda env list</td>
-</tr>
-<tr>
-<td>安装库</td>
-<td>pip install 名称 -i <a target="_blank" rel="noopener" href="https://pypi.tuna.tsinghua.edu.cn/simple%EF%BC%88%E4%BD%BF%E7%94%A8%E9%95%9C%E5%83%8F%EF%BC%8C%E4%B8%8B%E8%BD%BD%E6%9B%B4%E5%BF%AB%EF%BC%89">https://pypi.tuna.tsinghua.edu.cn/simple（使用镜像，下载更快）</a></td>
-</tr>
-<tr>
-<td>安装指定版本的库</td>
-<td>pip install 名称版本 --user(如，pip install pillow==6.2.2 --user）</td>
-</tr>
-<tr>
-<td>打开jupyter book</td>
-<td>jupyter notebook</td>
-</tr>
-<tr>
-<td>添加Anaconda的TUNA镜像</td>
-<td>conda config --add channels <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/">https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/</a></td>
-</tr>
-</tbody>
-</table>
 
                 
               </div>
@@ -527,7 +554,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/VSCode/">#VSCode</a>
+        <a href="/tags/py%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/">#py虚拟环境</a>
       
     </div>
   
