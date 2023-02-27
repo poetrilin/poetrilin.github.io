@@ -16,12 +16,12 @@
   <meta name="author" content="Poetrilin">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Notes from 《Introduction to Computer System》by Pett (前五章是去年弄的，重装的时候忘记存了quq)  此文权当期末复习用了. Unit 7 Assembly assembly language —&gt;machine code 7.2.1 Instructions: Label   Opcode   Operands   ; Comment 7">
+    <meta name="description" content="Notes from 《Introduction to Computer System》by Pett (前五章是去年弄的，重装的时候忘记存了quq)权当期末复习用了 Unit 7 Assembly assembly language —&gt;machine code 7.2.1 Instructions: Label   Opcode   Operands   ; Comment 7.2.1.">
 <meta property="og:type" content="article">
 <meta property="og:title" content="LC-3微架构总结">
 <meta property="og:url" content="http://www.poetrilin.com/2023/02/27/ics%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/index.html">
 <meta property="og:site_name" content="Poetrilin の Blogs">
-<meta property="og:description" content="Notes from 《Introduction to Computer System》by Pett (前五章是去年弄的，重装的时候忘记存了quq)  此文权当期末复习用了. Unit 7 Assembly assembly language —&gt;machine code 7.2.1 Instructions: Label   Opcode   Operands   ; Comment 7">
+<meta property="og:description" content="Notes from 《Introduction to Computer System》by Pett (前五章是去年弄的，重装的时候忘记存了quq)权当期末复习用了 Unit 7 Assembly assembly language —&gt;machine code 7.2.1 Instructions: Label   Opcode   Operands   ; Comment 7.2.1.">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s1.ax1x.com/2023/02/27/pp9B7oF.png">
 <meta property="og:image" content="https://s1.ax1x.com/2023/02/27/pp9LwND.png">
@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://s1.ax1x.com/2023/02/18/pSqfitA.png">
 <meta property="og:image" content="https://s1.ax1x.com/2023/02/27/ppCE1eS.png">
 <meta property="article:published_time" content="2023-02-27T12:22:17.671Z">
-<meta property="article:modified_time" content="2023-02-27T12:25:19.819Z">
+<meta property="article:modified_time" content="2023-02-27T12:40:21.601Z">
 <meta property="article:author" content="Poetrilin">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://s1.ax1x.com/2023/02/27/pp9B7oF.png">
@@ -289,7 +289,7 @@
               <div class="markdown-body">
                 
                 <p>Notes from 《Introduction to Computer System》by Pett</p>
-<p>(前五章是去年弄的，重装的时候忘记存了quq)  此文权当期末复习用了.</p>
+<p>(前五章是去年弄的，重装的时候忘记存了quq)权当期末复习用了</p>
 <h2 id="Unit-7">Unit 7</h2>
 <h3 id="Assembly">Assembly</h3>
 <p>assembly language —&gt;machine code</p>
@@ -406,10 +406,10 @@ Bits [15:12] contain the opcode, 0100.</p>
 <p>Bit [11] :addressing mode,</p>
 <ul class="lvl-0">
 <li class="lvl-2">
-<p>value 1 if the addressing mode is PC-relative,</p>
+<p>value 1 ： PC-relative,</p>
 </li>
 <li class="lvl-2">
-<p>value 0 if the addressing mode is Base Register addressing.</p>
+<p>value 0 : Base Register addressing.</p>
 </li>
 </ul>
 <p>Bits [10:0] contain information that is used to obtain the starting address of the subroutine.</p>
@@ -761,6 +761,8 @@ DDR[7 : 0] 时，显示器的电子设备自动清除 DSR[15]；</p>
 </li>
 <li class="lvl-2">
 <p>MDR：内存数据寄存器，用来暂时保存要读取或者写入的内存数据。</p>
+</li>
+</ul>
 <h2 id="C-2-The-State-Machine">C.2 The State Machine</h2>
 <p>前提:52个signal:42个确定数据路径中的信息处理，而其他十个控制信号与附加信息的十位(inst[15:11], PSR[15], ACV, BEN, INT, and R)组合</p>
 <p>这52个状态即这个体系的整个有限状态机.我们可以用一张图(结点为状态，弧线为流向即状态转换)概括</p>
@@ -772,7 +774,7 @@ DDR[7 : 0] 时，显示器的电子设备自动清除 DSR[15]；</p>
 <p>现在，回到在状态18的活动已经完成的时钟周期之后发生的事情。正如我们所说的，如果没有外部设备请求中断，则流程转到状态33（即100001）。如果处理器在用户模式下试图访问特权存储器，则控制从状态33转到状态60，如果允许存储器访问，即如果没有ACV违规，则控制转到状态28。</p>
 <p>在状态28中，由于MAR包含要处理的指令的地址，因此该指令从存储器中读取并加载到MDR中。由于该存储器访问可能需要多个周期，因此该状态继续执行，直到来自Memory-ready signal（R）被断言，表明存储器访问已完成。因此，MDR包含MAR指定的存储器位置的有效内容。然后状态机进入状态30，在状态30中，指令被加载到指令寄存器（IR）中，完成指令周期的FETCH阶段。</p>
 <p>状态机然后移动到状态32，在那里进行DECODE。注意，有13个弧从状态32发出，每个弧对应于LC-3指令的位[15:12]。这些操作码位将状态机引导到16条路径之一，以执行刚刚获取的特定指令的指令周期。注意，从每个指令周期的最后一个状态（即完成该LC-3指令处理的状态）开始的弧将我们带到状态18（开始下一个LC-3指令的指令周期）。</p>
-<h3 id="Data-Path">Data Path</h3>
+<h2 id="Data-Path">Data Path</h2>
 <p>Data Path包括在每个时钟周期中实际处理信息的所有组件、对信息进行操作的功能单元、在一个周期结束时存储信息以便在后续周期中进一步使用的寄存器，以及在数据路径中从一个点向另一个点传送信息的总线BUS和wires。</p>
 <p><a target="_blank" rel="noopener" href="https://imgse.com/i/ppCE1eS"><img src="https://s1.ax1x.com/2023/02/27/ppCE1eS.png" srcset="/img/loading.gif" lazyload alt="ppCE1eS.png" border="0" style="zoom:67%;" /></a></p>
 <p><strong>Figure C.3 The LC-3 data path.</strong></p>
@@ -784,7 +786,7 @@ DDR[7 : 0] 时，显示器的电子设备自动清除 DSR[15]；</p>
 <p>假设读取一个值需要五个周期的内存。也就是说，一旦MAR包含要读取的地址，并且微指令断言read，则需要五个周期才能将存储器中指定位置的内容加载到MDR中。（注意，微指令通过两个控制信号断言read：MIO.EN/YES和R.W/RD；）</p>
 <hr>
 <p>特别的,LD.reg指令在数据通路中需要以下控制信号:</p>
-<ul class="lvl-2">
+<ul class="lvl-0">
 <li class="lvl-4">
 <p>LD = 1，表示要执行LD指令</p>
 </li>
@@ -805,8 +807,6 @@ DDR[7 : 0] 时，显示器的电子设备自动清除 DSR[15]；</p>
 </li>
 </ul>
 <p>所以LD.reg在数据通路中为0/1的意思是LD.reg是一个控制信号，它为1时表示执行LD指令，为0时表示不执行。</p>
-</li>
-</ul>
 
                 
               </div>
@@ -851,8 +851,8 @@ DDR[7 : 0] 时，显示器的电子设备自动清除 DSR[15]；</p>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/02/10/Code/CPP/Graph/" title="图论几个基本算法">
-                        <span class="hidden-mobile">图论几个基本算法</span>
+                      <a href="/2023/02/04/Code/CPP/Catalan/" title="Catalan数与出栈序列">
+                        <span class="hidden-mobile">Catalan数与出栈序列</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
